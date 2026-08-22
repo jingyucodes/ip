@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class Echo {
@@ -22,10 +24,7 @@ public class Echo {
         // and avoids the priming/re-read pair a condition-driven loop would need.
         Scanner sc = new Scanner(System.in);
 
-        // Fixed-size store per spec (<=100 items). ArrayList would grow
-        // automatically, but the array + count pair makes size bookkeeping explicit.
-        Task[] items = new Task[100];
-        int count = 0;
+        List<Task> items = new ArrayList<>();
 
         while (true) {
             String input = sc.nextLine();
@@ -43,22 +42,28 @@ public class Echo {
                 switch (cmd) {
                 case "list":
                     System.out.println("Here are the tasks in your list:");
-                    for (int i = 0; i < count; i++) {
-                        System.out.println((i + 1) + "." + items[i]);
+                    for (int i = 0; i < items.size(); i++) {
+                        System.out.println((i + 1) + "." + items.get(i));
                     }
                     break;
                 case "mark": {
-                    int idx = parseTaskIndex(rest, count);
-                    items[idx].markAsDone();
+                    int idx = parseTaskIndex(rest, items.size());
+                    items.get(idx).markAsDone();
                     System.out.println("Nice! I've marked this task as done:");
-                    System.out.println("  " + items[idx]);
+                    System.out.println("  " + items.get(idx));
                     break;
                 }
                 case "unmark": {
-                    int idx = parseTaskIndex(rest, count);
-                    items[idx].markAsNotDone();
+                    int idx = parseTaskIndex(rest, items.size());
+                    items.get(idx).markAsNotDone();
                     System.out.println("OK, I've marked this task as not done yet:");
-                    System.out.println("  " + items[idx]);
+                    System.out.println("  " + items.get(idx));
+                    break;
+                }
+                case "delete": {
+                    int idx = parseTaskIndex(rest, items.size());
+                    Task removed = items.remove(idx);
+                    announceRemoved(removed, items.size());
                     break;
                 }
                 case "todo": {
@@ -67,8 +72,8 @@ public class Echo {
                         throw new EchoException("The description of a todo cannot be empty.");
                     }
                     Task t = new Todo(desc);
-                    items[count++] = t;
-                    announceAdded(t, count);
+                    items.add(t);
+                    announceAdded(t, items.size());
                     break;
                 }
                 case "deadline": {
@@ -86,8 +91,8 @@ public class Echo {
                         throw new EchoException("The '/by' time of a deadline cannot be empty.");
                     }
                     Task t = new Deadline(desc, by);
-                    items[count++] = t;
-                    announceAdded(t, count);
+                    items.add(t);
+                    announceAdded(t, items.size());
                     break;
                 }
                 case "event": {
@@ -112,8 +117,8 @@ public class Echo {
                         throw new EchoException("The '/to' time cannot be empty.");
                     }
                     Task t = new Event(desc, from, to);
-                    items[count++] = t;
-                    announceAdded(t, count);
+                    items.add(t);
+                    announceAdded(t, items.size());
                     break;
                 }
                 default:
@@ -133,6 +138,12 @@ public class Echo {
 
     private static void announceAdded(Task t, int newCount) {
         System.out.println("Got it. I've added this task:");
+        System.out.println("  " + t);
+        System.out.println("Now you have " + newCount + " tasks in the list.");
+    }
+
+    private static void announceRemoved(Task t, int newCount) {
+        System.out.println("Noted. I've removed this task:");
         System.out.println("  " + t);
         System.out.println("Now you have " + newCount + " tasks in the list.");
     }
