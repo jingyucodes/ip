@@ -1,13 +1,9 @@
 /**
- * A task with no date/time attached. Rendered with a "[T]" type tag.
+ * A task with no date/time attached. Its type tag "[T]" comes from
+ * TaskType.TODO passed to the Task superclass.
  */
 public class Todo extends Task {
     public Todo(String description) {
-        super(description);
-    }
-
-    @Override
-    public String toString() {
-        return "[T]" + super.toString();
+        super(description, TaskType.TODO);
     }
 }
