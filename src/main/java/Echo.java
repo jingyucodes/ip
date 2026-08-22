@@ -21,13 +21,27 @@ public class Echo {
         // Using `while (true) + break` keeps the "read, then decide" order obvious
         // and avoids the priming/re-read pair a condition-driven loop would need.
         Scanner sc = new Scanner(System.in);
+
+        // Fixed-size store per spec (<=100 items). ArrayList would grow
+        // automatically, but the array + count pair makes size bookkeeping explicit.
+        String[] items = new String[100];
+        int count = 0;
+
         while (true) {
             String input = sc.nextLine();
             if (input.equals("bye")) {
                 break;
             }
             System.out.println(LINE);
-            System.out.println(input);
+            if (input.equals("list")) {
+                for (int i = 0; i < count; i++) {
+                    System.out.println((i + 1) + ". " + items[i]);
+                }
+            } else {
+                items[count] = input;
+                count++;
+                System.out.println("added: " + input);
+            }
             System.out.println(LINE);
         }
         sc.close();
