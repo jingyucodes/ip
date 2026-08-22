@@ -48,10 +48,22 @@ public class Echo {
                 items[idx].markAsNotDone();
                 System.out.println("OK, I've marked this task as not done yet:");
                 System.out.println("  " + items[idx]);
-            } else {
-                items[count] = new Task(input);
-                count++;
-                System.out.println("added: " + input);
+            } else if (input.startsWith("todo ")) {
+                Task t = new Todo(input.substring(5));
+                items[count++] = t;
+                announceAdded(t, count);
+            } else if (input.startsWith("deadline ")) {
+                // split with limit 2 so a description containing "/by" isn't broken up
+                String[] p = input.substring(9).split(" /by ", 2);
+                Task t = new Deadline(p[0], p[1]);
+                items[count++] = t;
+                announceAdded(t, count);
+            } else if (input.startsWith("event ")) {
+                String[] p1 = input.substring(6).split(" /from ", 2);
+                String[] p2 = p1[1].split(" /to ", 2);
+                Task t = new Event(p1[0], p2[0], p2[1]);
+                items[count++] = t;
+                announceAdded(t, count);
             }
             System.out.println(LINE);
         }
@@ -60,5 +72,11 @@ public class Echo {
         System.out.println(LINE);
         System.out.println("Bye. Hope to echo with you again soon!");
         System.out.println(LINE);
+    }
+
+    private static void announceAdded(Task t, int newCount) {
+        System.out.println("Got it. I've added this task:");
+        System.out.println("  " + t);
+        System.out.println("Now you have " + newCount + " tasks in the list.");
     }
 }
