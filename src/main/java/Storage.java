@@ -1,6 +1,7 @@
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -87,8 +88,8 @@ public class Storage {
 
             Task task = switch (typeTag) {
                 case "T" -> new Todo(description);
-                case "D" -> new Deadline(description, parts[3].trim());
-                case "E" -> new Event(description, parts[3].trim(), parts[4].trim());
+                case "D" -> new Deadline(description, LocalDate.parse(parts[3].trim()));
+                case "E" -> new Event(description, LocalDate.parse(parts[3].trim()), LocalDate.parse(parts[4].trim()));
                 default -> throw new IllegalArgumentException("Unknown task type: " + typeTag);
             };
             if (isDone) {

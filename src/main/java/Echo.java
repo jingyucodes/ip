@@ -1,4 +1,5 @@
-import java.util.ArrayList;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -96,7 +97,9 @@ public class Echo {
                         if (by.isEmpty()) {
                             throw new EchoException("The '/by' time of a deadline cannot be empty.");
                         }
-                        Task t = new Deadline(desc, by);
+                        LocalDate byDate = parseDate(by,
+                                "Invalid date for '/by'. Use yyyy-mm-dd, e.g. 2019-10-15.");
+                        Task t = new Deadline(desc, byDate);
                         items.add(t);
                         announceAdded(t, items.size());
                         storage.save(items);
@@ -124,10 +127,37 @@ public class Echo {
                         if (to.isEmpty()) {
                             throw new EchoException("The '/to' time cannot be empty.");
                         }
-                        Task t = new Event(desc, from, to);
+                        LocalDate fromDate = parseDate(from,
+                                "Invalid date for '/from'. Use yyyy-mm-dd, e.g. 2019-10-15.");
+                        LocalDate toDate = parseDate(to,
+                                "Invalid date for '/to'. Use yyyy-mm-dd, e.g. 2019-10-15.");
+                        if (toDate.isBefore(fromDate)) {
+                            throw new EchoException("An event's '/to' date cannot be before its '/from' date.");
+                        }
+                        Task t = new Event(desc, fromDate, toDate);
                         items.add(t);
                         announceAdded(t, items.size());
                         storage.save(items);
+                        break;
+                    }
+                    case "on": {
+                        String dateStr = rest.trim();
+                        if (dateStr.isEmpty()) {
+                            throw new EchoException("Please give a date. Example: on 2019-10-15");
+                        }
+                        LocalDate date = parseDate(dateStr, "Invalid date. Use yyyy-mm-dd, e.g. 2019-10-15.");
+                        System.out.println("Here are the tasks occurring on "
+                                + date.format(Task.DISPLAY_DATE_FORMAT) + ":");
+                        int count = 0;
+                        for (Task task : items) {
+                            if (task.occursOn(date)) {
+                                count++;
+                                System.out.println(count + "." + task);
+                            }
+                        }
+                        if (count == 0) {
+                            System.out.println("(none)");
+                        }
                         break;
                     }
                     default:
@@ -155,6 +185,14 @@ public class Echo {
         System.out.println("Noted. I've removed this task:");
         System.out.println("  " + t);
         System.out.println("Now you have " + newCount + " tasks in the list.");
+    }
+
+    private static LocalDate parseDate(String s, String errorMessage) throws EchoException {
+        try {
+            return LocalDate.parse(s);
+        } catch (DateTimeParseException e) {
+            throw new EchoException(errorMessage);
+        }
     }
 
     private static int parseTaskIndex(String rest, int count) throws EchoException {
