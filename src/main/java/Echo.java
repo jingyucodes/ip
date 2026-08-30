@@ -1,39 +1,25 @@
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 public class Echo {
-    private static final String LINE =
-            "____________________________________________________________";
-
     public static void main(String[] args) {
-        String banner = " _____      _           \n"
-                + "| ____|___ | |__   ___  \n"
-                + "|  _| / __|| '_ \\ / _ \\ \n"
-                + "| |__| (__ | | | | (_) |\n"
-                + "|_____\\___||_| |_|\\___/ \n";
-
-        System.out.println(LINE);
-        System.out.print(banner);
-        System.out.println("Hello! I'm Echo.");
-        System.out.println("What's on your mind?");
-        System.out.println(LINE);
-
-        // Read-then-decide loop: reads a line, then checks for the exit word.
-        // Using `while (true) + break` keeps the "read, then decide" order obvious
-        // and avoids the priming/re-read pair a condition-driven loop would need.
-        Scanner sc = new Scanner(System.in);
+        Ui ui = new Ui();
+        ui.showWelcome();
 
         Storage storage = new Storage("data/echo.txt");
         List<Task> items = storage.load();
 
+        // Read-then-decide loop: reads a line, then checks for the exit word.
+        // Using `while (true) + break` keeps the "read, then decide" order obvious
+        // and avoids the priming/re-read pair a condition-driven loop would need.
         while (true) {
-            String input = sc.nextLine();
+            String input = ui.readCommand();
             if (input.equals("bye")) {
                 break;
             }
-            System.out.println(LINE);
+            ui.showLine();
             try {
                 // Split once so cmd is the first word and rest is everything after
                 // the first space (empty string if there is no space).
@@ -43,31 +29,26 @@ public class Echo {
 
                 switch (cmd) {
                     case "list":
-                        System.out.println("Here are the tasks in your list:");
-                        for (int i = 0; i < items.size(); i++) {
-                            System.out.println((i + 1) + "." + items.get(i));
-                        }
+                        ui.showList(items);
                         break;
                     case "mark": {
                         int idx = parseTaskIndex(rest, items.size());
                         items.get(idx).markAsDone();
-                        System.out.println("Nice! I've marked this task as done:");
-                        System.out.println("  " + items.get(idx));
+                        ui.showTaskMarked(items.get(idx));
                         storage.save(items);
                         break;
                     }
                     case "unmark": {
                         int idx = parseTaskIndex(rest, items.size());
                         items.get(idx).markAsNotDone();
-                        System.out.println("OK, I've marked this task as not done yet:");
-                        System.out.println("  " + items.get(idx));
+                        ui.showTaskUnmarked(items.get(idx));
                         storage.save(items);
                         break;
                     }
                     case "delete": {
                         int idx = parseTaskIndex(rest, items.size());
                         Task removed = items.remove(idx);
-                        announceRemoved(removed, items.size());
+                        ui.showTaskRemoved(removed, items.size());
                         storage.save(items);
                         break;
                     }
@@ -78,7 +59,7 @@ public class Echo {
                         }
                         Task t = new Todo(desc);
                         items.add(t);
-                        announceAdded(t, items.size());
+                        ui.showTaskAdded(t, items.size());
                         storage.save(items);
                         break;
                     }
@@ -101,7 +82,7 @@ public class Echo {
                                 "Invalid date for '/by'. Use yyyy-mm-dd, e.g. 2019-10-15.");
                         Task t = new Deadline(desc, byDate);
                         items.add(t);
-                        announceAdded(t, items.size());
+                        ui.showTaskAdded(t, items.size());
                         storage.save(items);
                         break;
                     }
@@ -136,7 +117,7 @@ public class Echo {
                         }
                         Task t = new Event(desc, fromDate, toDate);
                         items.add(t);
-                        announceAdded(t, items.size());
+                        ui.showTaskAdded(t, items.size());
                         storage.save(items);
                         break;
                     }
@@ -146,45 +127,25 @@ public class Echo {
                             throw new EchoException("Please give a date. Example: on 2019-10-15");
                         }
                         LocalDate date = parseDate(dateStr, "Invalid date. Use yyyy-mm-dd, e.g. 2019-10-15.");
-                        System.out.println("Here are the tasks occurring on "
-                                + date.format(Task.DISPLAY_DATE_FORMAT) + ":");
-                        int count = 0;
+                        List<Task> matches = new ArrayList<>();
                         for (Task task : items) {
                             if (task.occursOn(date)) {
-                                count++;
-                                System.out.println(count + "." + task);
+                                matches.add(task);
                             }
                         }
-                        if (count == 0) {
-                            System.out.println("(none)");
-                        }
+                        ui.showTasksOnDate(date, matches);
                         break;
                     }
                     default:
                         throw new EchoException("I'm sorry, but I don't know what that means :-(");
                 }
             } catch (EchoException e) {
-                System.out.println("OOPS!!! " + e.getMessage());
+                ui.showError(e.getMessage());
             }
-            System.out.println(LINE);
+            ui.showLine();
         }
-        sc.close();
-
-        System.out.println(LINE);
-        System.out.println("Bye. Hope to echo with you again soon!");
-        System.out.println(LINE);
-    }
-
-    private static void announceAdded(Task t, int newCount) {
-        System.out.println("Got it. I've added this task:");
-        System.out.println("  " + t);
-        System.out.println("Now you have " + newCount + " tasks in the list.");
-    }
-
-    private static void announceRemoved(Task t, int newCount) {
-        System.out.println("Noted. I've removed this task:");
-        System.out.println("  " + t);
-        System.out.println("Now you have " + newCount + " tasks in the list.");
+        ui.close();
+        ui.showGoodbye();
     }
 
     private static LocalDate parseDate(String s, String errorMessage) throws EchoException {
