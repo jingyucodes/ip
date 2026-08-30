@@ -1,8 +1,14 @@
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 /**
  * A single to-do item tracked by Echo. Holds a description, a task type
  * (TODO/DEADLINE/EVENT) and whether the task has been marked as done.
  */
 public class Task {
+    public static final DateTimeFormatter DISPLAY_DATE_FORMAT =
+            DateTimeFormatter.ofPattern("MMM dd yyyy");
+
     private final String description;
     private final TaskType type;
     private boolean isDone;
@@ -37,5 +43,13 @@ public class Task {
      */
     public String toFileFormat() {
         return type.tag() + " | " + (isDone ? "1" : "0") + " | " + description;
+    }
+
+    /**
+     * Returns whether this task occurs on the given date. A plain Task
+     * (Todo) is never date-specific; Deadline/Event override this.
+     */
+    public boolean occursOn(LocalDate date) {
+        return false;
     }
 }
