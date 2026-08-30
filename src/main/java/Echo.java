@@ -24,7 +24,8 @@ public class Echo {
         // and avoids the priming/re-read pair a condition-driven loop would need.
         Scanner sc = new Scanner(System.in);
 
-        List<Task> items = new ArrayList<>();
+        Storage storage = new Storage("data/echo.txt");
+        List<Task> items = storage.load();
 
         while (true) {
             String input = sc.nextLine();
@@ -40,89 +41,97 @@ public class Echo {
                 String rest = parts.length > 1 ? parts[1] : "";
 
                 switch (cmd) {
-                case "list":
-                    System.out.println("Here are the tasks in your list:");
-                    for (int i = 0; i < items.size(); i++) {
-                        System.out.println((i + 1) + "." + items.get(i));
+                    case "list":
+                        System.out.println("Here are the tasks in your list:");
+                        for (int i = 0; i < items.size(); i++) {
+                            System.out.println((i + 1) + "." + items.get(i));
+                        }
+                        break;
+                    case "mark": {
+                        int idx = parseTaskIndex(rest, items.size());
+                        items.get(idx).markAsDone();
+                        System.out.println("Nice! I've marked this task as done:");
+                        System.out.println("  " + items.get(idx));
+                        storage.save(items);
+                        break;
                     }
-                    break;
-                case "mark": {
-                    int idx = parseTaskIndex(rest, items.size());
-                    items.get(idx).markAsDone();
-                    System.out.println("Nice! I've marked this task as done:");
-                    System.out.println("  " + items.get(idx));
-                    break;
-                }
-                case "unmark": {
-                    int idx = parseTaskIndex(rest, items.size());
-                    items.get(idx).markAsNotDone();
-                    System.out.println("OK, I've marked this task as not done yet:");
-                    System.out.println("  " + items.get(idx));
-                    break;
-                }
-                case "delete": {
-                    int idx = parseTaskIndex(rest, items.size());
-                    Task removed = items.remove(idx);
-                    announceRemoved(removed, items.size());
-                    break;
-                }
-                case "todo": {
-                    String desc = rest.trim();
-                    if (desc.isEmpty()) {
-                        throw new EchoException("The description of a todo cannot be empty.");
+                    case "unmark": {
+                        int idx = parseTaskIndex(rest, items.size());
+                        items.get(idx).markAsNotDone();
+                        System.out.println("OK, I've marked this task as not done yet:");
+                        System.out.println("  " + items.get(idx));
+                        storage.save(items);
+                        break;
                     }
-                    Task t = new Todo(desc);
-                    items.add(t);
-                    announceAdded(t, items.size());
-                    break;
-                }
-                case "deadline": {
-                    // split with limit 2 so a description containing "/by" isn't broken up
-                    String[] p = rest.split(" /by ", 2);
-                    if (p.length < 2) {
-                        throw new EchoException("A deadline needs a '/by <when>' clause. Example: deadline return book /by Sunday");
+                    case "delete": {
+                        int idx = parseTaskIndex(rest, items.size());
+                        Task removed = items.remove(idx);
+                        announceRemoved(removed, items.size());
+                        storage.save(items);
+                        break;
                     }
-                    String desc = p[0].trim();
-                    String by = p[1].trim();
-                    if (desc.isEmpty()) {
-                        throw new EchoException("The description of a deadline cannot be empty.");
+                    case "todo": {
+                        String desc = rest.trim();
+                        if (desc.isEmpty()) {
+                            throw new EchoException("The description of a todo cannot be empty.");
+                        }
+                        Task t = new Todo(desc);
+                        items.add(t);
+                        announceAdded(t, items.size());
+                        storage.save(items);
+                        break;
                     }
-                    if (by.isEmpty()) {
-                        throw new EchoException("The '/by' time of a deadline cannot be empty.");
+                    case "deadline": {
+                        // split with limit 2 so a description containing "/by" isn't broken up
+                        String[] p = rest.split(" /by ", 2);
+                        if (p.length < 2) {
+                            throw new EchoException("A deadline needs a '/by <when>' clause. "
+                                    + "Example: deadline return book /by Sunday");
+                        }
+                        String desc = p[0].trim();
+                        String by = p[1].trim();
+                        if (desc.isEmpty()) {
+                            throw new EchoException("The description of a deadline cannot be empty.");
+                        }
+                        if (by.isEmpty()) {
+                            throw new EchoException("The '/by' time of a deadline cannot be empty.");
+                        }
+                        Task t = new Deadline(desc, by);
+                        items.add(t);
+                        announceAdded(t, items.size());
+                        storage.save(items);
+                        break;
                     }
-                    Task t = new Deadline(desc, by);
-                    items.add(t);
-                    announceAdded(t, items.size());
-                    break;
-                }
-                case "event": {
-                    String[] p1 = rest.split(" /from ", 2);
-                    if (p1.length < 2) {
-                        throw new EchoException("An event needs a '/from <when>' clause. Example: event meeting /from Mon 2pm /to 4pm");
+                    case "event": {
+                        String[] p1 = rest.split(" /from ", 2);
+                        if (p1.length < 2) {
+                            throw new EchoException("An event needs a '/from <when>' clause. "
+                                    + "Example: event meeting /from Mon 2pm /to 4pm");
+                        }
+                        String[] p2 = p1[1].split(" /to ", 2);
+                        if (p2.length < 2) {
+                            throw new EchoException("An event needs a '/to <when>' clause after '/from'.");
+                        }
+                        String desc = p1[0].trim();
+                        String from = p2[0].trim();
+                        String to = p2[1].trim();
+                        if (desc.isEmpty()) {
+                            throw new EchoException("The description of an event cannot be empty.");
+                        }
+                        if (from.isEmpty()) {
+                            throw new EchoException("The '/from' time cannot be empty.");
+                        }
+                        if (to.isEmpty()) {
+                            throw new EchoException("The '/to' time cannot be empty.");
+                        }
+                        Task t = new Event(desc, from, to);
+                        items.add(t);
+                        announceAdded(t, items.size());
+                        storage.save(items);
+                        break;
                     }
-                    String[] p2 = p1[1].split(" /to ", 2);
-                    if (p2.length < 2) {
-                        throw new EchoException("An event needs a '/to <when>' clause after '/from'.");
-                    }
-                    String desc = p1[0].trim();
-                    String from = p2[0].trim();
-                    String to = p2[1].trim();
-                    if (desc.isEmpty()) {
-                        throw new EchoException("The description of an event cannot be empty.");
-                    }
-                    if (from.isEmpty()) {
-                        throw new EchoException("The '/from' time cannot be empty.");
-                    }
-                    if (to.isEmpty()) {
-                        throw new EchoException("The '/to' time cannot be empty.");
-                    }
-                    Task t = new Event(desc, from, to);
-                    items.add(t);
-                    announceAdded(t, items.size());
-                    break;
-                }
-                default:
-                    throw new EchoException("I'm sorry, but I don't know what that means :-(");
+                    default:
+                        throw new EchoException("I'm sorry, but I don't know what that means :-(");
                 }
             } catch (EchoException e) {
                 System.out.println("OOPS!!! " + e.getMessage());

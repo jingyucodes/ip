@@ -29,4 +29,13 @@ public class Task {
     public String toString() {
         return "[" + type.tag() + "][" + getStatusIcon() + "] " + description;
     }
+
+    /**
+     * Renders this task as a single line for the save file, e.g.
+     * {@code T | 1 | read book}. Subclasses append their own extra fields
+     * after calling this via super, mirroring the toString() pattern.
+     */
+    public String toFileFormat() {
+        return type.tag() + " | " + (isDone ? "1" : "0") + " | " + description;
+    }
 }
