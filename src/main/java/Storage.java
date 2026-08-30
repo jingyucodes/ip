@@ -14,6 +14,11 @@ import java.util.List;
 public class Storage {
     private final Path filePath;
 
+    /**
+     * Creates a Storage bound to the given save-file path.
+     *
+     * @param filePath Relative path to the save file, e.g. "data/echo.txt".
+     */
     public Storage(String filePath) {
         this.filePath = Path.of(filePath);
     }
@@ -80,20 +85,12 @@ public class Storage {
             boolean isDone = parts[1].trim().equals("1");
             String description = parts[2].trim();
 
-            Task task;
-            switch (typeTag) {
-            case "T":
-                task = new Todo(description);
-                break;
-            case "D":
-                task = new Deadline(description, parts[3].trim());
-                break;
-            case "E":
-                task = new Event(description, parts[3].trim(), parts[4].trim());
-                break;
-            default:
-                throw new IllegalArgumentException("Unknown task type: " + typeTag);
-            }
+            Task task = switch (typeTag) {
+                case "T" -> new Todo(description);
+                case "D" -> new Deadline(description, parts[3].trim());
+                case "E" -> new Event(description, parts[3].trim(), parts[4].trim());
+                default -> throw new IllegalArgumentException("Unknown task type: " + typeTag);
+            };
             if (isDone) {
                 task.markAsDone();
             }
