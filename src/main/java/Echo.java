@@ -24,7 +24,8 @@ public class Echo {
         // and avoids the priming/re-read pair a condition-driven loop would need.
         Scanner sc = new Scanner(System.in);
 
-        List<Task> items = new ArrayList<>();
+        Storage storage = new Storage("data/echo.txt");
+        List<Task> items = storage.load();
 
         while (true) {
             String input = sc.nextLine();
@@ -51,6 +52,7 @@ public class Echo {
                     items.get(idx).markAsDone();
                     System.out.println("Nice! I've marked this task as done:");
                     System.out.println("  " + items.get(idx));
+                    storage.save(items);
                     break;
                 }
                 case "unmark": {
@@ -58,12 +60,14 @@ public class Echo {
                     items.get(idx).markAsNotDone();
                     System.out.println("OK, I've marked this task as not done yet:");
                     System.out.println("  " + items.get(idx));
+                    storage.save(items);
                     break;
                 }
                 case "delete": {
                     int idx = parseTaskIndex(rest, items.size());
                     Task removed = items.remove(idx);
                     announceRemoved(removed, items.size());
+                    storage.save(items);
                     break;
                 }
                 case "todo": {
@@ -74,6 +78,7 @@ public class Echo {
                     Task t = new Todo(desc);
                     items.add(t);
                     announceAdded(t, items.size());
+                    storage.save(items);
                     break;
                 }
                 case "deadline": {
@@ -93,6 +98,7 @@ public class Echo {
                     Task t = new Deadline(desc, by);
                     items.add(t);
                     announceAdded(t, items.size());
+                    storage.save(items);
                     break;
                 }
                 case "event": {
@@ -119,6 +125,7 @@ public class Echo {
                     Task t = new Event(desc, from, to);
                     items.add(t);
                     announceAdded(t, items.size());
+                    storage.save(items);
                     break;
                 }
                 default:
