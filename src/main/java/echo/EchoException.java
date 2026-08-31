@@ -6,6 +6,7 @@ package echo;
  * as a clear explanation of what went wrong.
  */
 public class EchoException extends Exception {
+    /** Creates an EchoException with the given user-facing message. */
     public EchoException(String message) {
         super(message);
     }

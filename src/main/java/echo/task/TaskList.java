@@ -11,22 +11,31 @@ import java.util.List;
 public class TaskList {
     private final List<Task> tasks;
 
+    /**
+     * Wraps the given list of tasks.
+     *
+     * @param tasks The initial tasks (e.g. freshly loaded from Storage).
+     */
     public TaskList(List<Task> tasks) {
         this.tasks = tasks;
     }
 
+    /** Adds a task to the end of the list. */
     public void add(Task task) {
         tasks.add(task);
     }
 
+    /** Removes and returns the task at the given zero-based index. */
     public Task remove(int index) {
         return tasks.remove(index);
     }
 
+    /** Returns the task at the given zero-based index. */
     public Task get(int index) {
         return tasks.get(index);
     }
 
+    /** Returns the number of tasks currently in the list. */
     public int size() {
         return tasks.size();
     }

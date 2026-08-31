@@ -9,23 +9,42 @@ public class Event extends Task {
     protected LocalDate from;
     protected LocalDate to;
 
+    /**
+     * Creates an Event task spanning the given inclusive date range.
+     *
+     * @param description What the event is.
+     * @param from The first date the event occurs on.
+     * @param to The last date the event occurs on.
+     */
     public Event(String description, LocalDate from, LocalDate to) {
         super(description, TaskType.EVENT);
         this.from = from;
         this.to = to;
     }
 
+    /**
+     * Returns this task's display line plus its date range, e.g.
+     * "[E][ ] trip (from: Aug 01 2019 to: Aug 03 2019)".
+     */
     @Override
     public String toString() {
         return super.toString() + " (from: " + from.format(DISPLAY_DATE_FORMAT)
                 + " to: " + to.format(DISPLAY_DATE_FORMAT) + ")";
     }
 
+    /**
+     * Returns this task's save-file line plus its date range in ISO
+     * format, e.g. "E | 0 | trip | 2019-08-01 | 2019-08-03".
+     */
     @Override
     public String toFileFormat() {
         return super.toFileFormat() + " | " + from + " | " + to;
     }
 
+    /**
+     * Returns true if the given date falls within this event's
+     * inclusive date range.
+     */
     @Override
     public boolean occursOn(LocalDate date) {
         return !date.isBefore(from) && !date.isAfter(to);

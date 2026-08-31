@@ -72,6 +72,10 @@ public class Storage {
         }
     }
 
+    /**
+     * Creates the save file's parent folder and the file itself if either
+     * is missing, so load()/save() never have to handle a missing path.
+     */
     private void ensureFileExists() throws IOException {
         Path parent = filePath.getParent();
         if (parent != null && Files.notExists(parent)) {
