@@ -1,6 +1,10 @@
+package echo.ui;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Scanner;
+
+import echo.task.Task;
 
 /**
  * Handles all interaction with the user: reading raw command lines from

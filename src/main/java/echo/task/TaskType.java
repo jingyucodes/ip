@@ -1,3 +1,5 @@
+package echo.task;
+
 /**
  * The kind of a Task. Each value carries the single-letter tag used when the
  * task is rendered (e.g., "[T]", "[D]", "[E]").

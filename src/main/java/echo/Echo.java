@@ -1,6 +1,14 @@
+package echo;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
+import echo.parser.Parser;
+import echo.storage.Storage;
+import echo.task.Task;
+import echo.task.TaskList;
+import echo.ui.Ui;
 
 public class Echo {
     private final Ui ui;

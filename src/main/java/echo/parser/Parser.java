@@ -1,5 +1,13 @@
+package echo.parser;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+
+import echo.EchoException;
+import echo.task.Deadline;
+import echo.task.Event;
+import echo.task.Task;
+import echo.task.Todo;
 
 /**
  * Makes sense of a raw user command line: splitting it into a command word
