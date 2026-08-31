@@ -3,16 +3,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Echo {
-    public static void main(String[] args) {
-        Ui ui = new Ui();
+    private final Ui ui;
+    private final Storage storage;
+    private final TaskList tasks;
+
+    public Echo(String filePath) {
+        ui = new Ui();
+        storage = new Storage(filePath);
+        tasks = new TaskList(storage.load());
+    }
+
+    /**
+     * Runs the read-then-decide loop: reads a line, then checks for the
+     * exit word. Using `while (true) + break` keeps the "read, then
+     * decide" order obvious and avoids the priming/re-read pair a
+     * condition-driven loop would need.
+     */
+    public void run() {
         ui.showWelcome();
-
-        Storage storage = new Storage("data/echo.txt");
-        TaskList tasks = new TaskList(storage.load());
-
-        // Read-then-decide loop: reads a line, then checks for the exit word.
-        // Using `while (true) + break` keeps the "read, then decide" order obvious
-        // and avoids the priming/re-read pair a condition-driven loop would need.
         while (true) {
             String input = ui.readCommand();
             if (input.equals("bye")) {
@@ -90,5 +98,9 @@ public class Echo {
         }
         ui.close();
         ui.showGoodbye();
+    }
+
+    public static void main(String[] args) {
+        new Echo("data/echo.txt").run();
     }
 }
