@@ -15,7 +15,7 @@ public enum TaskType {
         this.tag = tag;
     }
 
-    public String tag() {
+    public String getTag() {
         return tag;
     }
 }

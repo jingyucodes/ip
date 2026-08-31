@@ -35,7 +35,7 @@ public class Task {
 
     @Override
     public String toString() {
-        return "[" + type.tag() + "][" + getStatusIcon() + "] " + description;
+        return "[" + type.getTag() + "][" + getStatusIcon() + "] " + description;
     }
 
     /**
@@ -44,7 +44,7 @@ public class Task {
      * after calling this via super, mirroring the toString() pattern.
      */
     public String toFileFormat() {
-        return type.tag() + " | " + (isDone ? "1" : "0") + " | " + description;
+        return type.getTag() + " | " + (isDone ? "1" : "0") + " | " + description;
     }
 
     /**
