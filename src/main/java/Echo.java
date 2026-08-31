@@ -9,7 +9,7 @@ public class Echo {
         ui.showWelcome();
 
         Storage storage = new Storage("data/echo.txt");
-        List<Task> items = storage.load();
+        TaskList tasks = new TaskList(storage.load());
 
         // Read-then-decide loop: reads a line, then checks for the exit word.
         // Using `while (true) + break` keeps the "read, then decide" order obvious
@@ -29,27 +29,27 @@ public class Echo {
 
                 switch (cmd) {
                     case "list":
-                        ui.showList(items);
+                        ui.showList(tasks.getAll());
                         break;
                     case "mark": {
-                        int idx = parseTaskIndex(rest, items.size());
-                        items.get(idx).markAsDone();
-                        ui.showTaskMarked(items.get(idx));
-                        storage.save(items);
+                        int idx = parseTaskIndex(rest, tasks.size());
+                        tasks.get(idx).markAsDone();
+                        ui.showTaskMarked(tasks.get(idx));
+                        storage.save(tasks.getAll());
                         break;
                     }
                     case "unmark": {
-                        int idx = parseTaskIndex(rest, items.size());
-                        items.get(idx).markAsNotDone();
-                        ui.showTaskUnmarked(items.get(idx));
-                        storage.save(items);
+                        int idx = parseTaskIndex(rest, tasks.size());
+                        tasks.get(idx).markAsNotDone();
+                        ui.showTaskUnmarked(tasks.get(idx));
+                        storage.save(tasks.getAll());
                         break;
                     }
                     case "delete": {
-                        int idx = parseTaskIndex(rest, items.size());
-                        Task removed = items.remove(idx);
-                        ui.showTaskRemoved(removed, items.size());
-                        storage.save(items);
+                        int idx = parseTaskIndex(rest, tasks.size());
+                        Task removed = tasks.remove(idx);
+                        ui.showTaskRemoved(removed, tasks.size());
+                        storage.save(tasks.getAll());
                         break;
                     }
                     case "todo": {
@@ -58,9 +58,9 @@ public class Echo {
                             throw new EchoException("The description of a todo cannot be empty.");
                         }
                         Task t = new Todo(desc);
-                        items.add(t);
-                        ui.showTaskAdded(t, items.size());
-                        storage.save(items);
+                        tasks.add(t);
+                        ui.showTaskAdded(t, tasks.size());
+                        storage.save(tasks.getAll());
                         break;
                     }
                     case "deadline": {
@@ -81,9 +81,9 @@ public class Echo {
                         LocalDate byDate = parseDate(by,
                                 "Invalid date for '/by'. Use yyyy-mm-dd, e.g. 2019-10-15.");
                         Task t = new Deadline(desc, byDate);
-                        items.add(t);
-                        ui.showTaskAdded(t, items.size());
-                        storage.save(items);
+                        tasks.add(t);
+                        ui.showTaskAdded(t, tasks.size());
+                        storage.save(tasks.getAll());
                         break;
                     }
                     case "event": {
@@ -116,9 +116,9 @@ public class Echo {
                             throw new EchoException("An event's '/to' date cannot be before its '/from' date.");
                         }
                         Task t = new Event(desc, fromDate, toDate);
-                        items.add(t);
-                        ui.showTaskAdded(t, items.size());
-                        storage.save(items);
+                        tasks.add(t);
+                        ui.showTaskAdded(t, tasks.size());
+                        storage.save(tasks.getAll());
                         break;
                     }
                     case "on": {
@@ -128,7 +128,7 @@ public class Echo {
                         }
                         LocalDate date = parseDate(dateStr, "Invalid date. Use yyyy-mm-dd, e.g. 2019-10-15.");
                         List<Task> matches = new ArrayList<>();
-                        for (Task task : items) {
+                        for (Task task : tasks.getAll()) {
                             if (task.occursOn(date)) {
                                 matches.add(task);
                             }
