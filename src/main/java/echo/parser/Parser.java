@@ -36,6 +36,13 @@ public class Parser {
         return parts.length > 1 ? parts[1] : "";
     }
 
+    /**
+     * Parses a {@code todo} command's arguments into a Todo task.
+     *
+     * @param rest Text after the "todo" command word.
+     * @return The parsed Todo task.
+     * @throws EchoException If the description is empty.
+     */
     public static Task parseTodo(String rest) throws EchoException {
         String desc = rest.trim();
         if (desc.isEmpty()) {
@@ -44,6 +51,15 @@ public class Parser {
         return new Todo(desc);
     }
 
+    /**
+     * Parses a {@code deadline} command's arguments into a Deadline task.
+     *
+     * @param rest Text after the "deadline" command word, expected to
+     *     contain a "/by &lt;date&gt;" clause.
+     * @return The parsed Deadline task.
+     * @throws EchoException If the "/by" clause is missing, either field
+     *     is empty, or the date is not in yyyy-mm-dd format.
+     */
     public static Task parseDeadline(String rest) throws EchoException {
         // split with limit 2 so a description containing "/by" isn't broken up
         String[] p = rest.split(" /by ", 2);
@@ -63,6 +79,16 @@ public class Parser {
         return new Deadline(desc, byDate);
     }
 
+    /**
+     * Parses an {@code event} command's arguments into an Event task.
+     *
+     * @param rest Text after the "event" command word, expected to
+     *     contain "/from &lt;date&gt;" and "/to &lt;date&gt;" clauses.
+     * @return The parsed Event task.
+     * @throws EchoException If either clause is missing, any field is
+     *     empty, either date is not in yyyy-mm-dd format, or the "/to"
+     *     date is before the "/from" date.
+     */
     public static Task parseEvent(String rest) throws EchoException {
         String[] p1 = rest.split(" /from ", 2);
         if (p1.length < 2) {
@@ -93,6 +119,14 @@ public class Parser {
         return new Event(desc, fromDate, toDate);
     }
 
+    /**
+     * Parses an {@code on} command's argument into the date to query.
+     *
+     * @param rest Text after the "on" command word, expected to be a date.
+     * @return The parsed date.
+     * @throws EchoException If no date is given or it is not in
+     *     yyyy-mm-dd format.
+     */
     public static LocalDate parseOnDate(String rest) throws EchoException {
         String dateStr = rest.trim();
         if (dateStr.isEmpty()) {
@@ -101,6 +135,17 @@ public class Parser {
         return parseDate(dateStr, "Invalid date. Use yyyy-mm-dd, e.g. 2019-10-15.");
     }
 
+    /**
+     * Parses a task-number argument (e.g. for {@code mark}/{@code delete})
+     * into a zero-based list index.
+     *
+     * @param rest Text after the command word, expected to be an integer.
+     * @param count Current number of tasks, used to validate the index
+     *     is in range.
+     * @return The zero-based index of the referenced task.
+     * @throws EchoException If no number is given, it isn't an integer,
+     *     or it is out of range.
+     */
     public static int parseTaskIndex(String rest, int count) throws EchoException {
         String s = rest.trim();
         if (s.isEmpty()) {
@@ -118,6 +163,10 @@ public class Parser {
         return n - 1;
     }
 
+    /**
+     * Parses a yyyy-mm-dd date string, converting any parse failure into
+     * the given user-facing error message.
+     */
     private static LocalDate parseDate(String s, String errorMessage) throws EchoException {
         try {
             return LocalDate.parse(s);

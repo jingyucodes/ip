@@ -15,24 +15,35 @@ public class Task {
     private final TaskType type;
     private boolean isDone;
 
+    /**
+     * Creates a Task with the given description and type, initially not
+     * done.
+     *
+     * @param description What needs to be done.
+     * @param type Whether this is a TODO/DEADLINE/EVENT.
+     */
     public Task(String description, TaskType type) {
         this.description = description;
         this.type = type;
         this.isDone = false;
     }
 
+    /** Marks this task as done. */
     public void markAsDone() {
         this.isDone = true;
     }
 
+    /** Marks this task as not done. */
     public void markAsNotDone() {
         this.isDone = false;
     }
 
+    /** Returns "X" if this task is done, or a blank space otherwise. */
     public String getStatusIcon() {
         return isDone ? "X" : " ";
     }
 
+    /** Returns this task's display line, e.g. "[T][ ] read book". */
     @Override
     public String toString() {
         return "[" + type.tag() + "][" + getStatusIcon() + "] " + description;

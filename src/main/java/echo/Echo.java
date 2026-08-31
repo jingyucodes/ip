@@ -10,11 +10,21 @@ import echo.task.Task;
 import echo.task.TaskList;
 import echo.ui.Ui;
 
+/**
+ * Entry point and orchestrator for the Echo chatbot. Wires together Ui,
+ * Storage, and TaskList, then runs the read-command/dispatch/respond loop.
+ */
 public class Echo {
     private final Ui ui;
     private final Storage storage;
     private final TaskList tasks;
 
+    /**
+     * Creates an Echo bound to the given save-file path, loading any
+     * previously saved tasks immediately.
+     *
+     * @param filePath Relative path to the save file, e.g. "data/echo.txt".
+     */
     public Echo(String filePath) {
         ui = new Ui();
         storage = new Storage(filePath);
@@ -108,6 +118,11 @@ public class Echo {
         ui.showGoodbye();
     }
 
+    /**
+     * Starts Echo with the default save-file path.
+     *
+     * @param args Command-line arguments (unused).
+     */
     public static void main(String[] args) {
         new Echo("data/echo.txt").run();
     }
