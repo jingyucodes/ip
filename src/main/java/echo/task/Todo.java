@@ -1,3 +1,5 @@
+package echo.task;
+
 /**
  * A task with no date/time attached. Its type tag "[T]" comes from
  * TaskType.TODO passed to the Task superclass.
