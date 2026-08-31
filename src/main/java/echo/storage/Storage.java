@@ -100,7 +100,8 @@ public class Storage {
             Task task = switch (typeTag) {
                 case "T" -> new Todo(description);
                 case "D" -> new Deadline(description, LocalDate.parse(parts[3].trim()));
-                case "E" -> new Event(description, LocalDate.parse(parts[3].trim()), LocalDate.parse(parts[4].trim()));
+                case "E" -> new Event(description, LocalDate.parse(parts[3].trim()),
+                        LocalDate.parse(parts[4].trim()));
                 default -> throw new IllegalArgumentException("Unknown task type: " + typeTag);
             };
             if (isDone) {

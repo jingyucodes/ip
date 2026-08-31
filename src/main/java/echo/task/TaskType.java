@@ -16,7 +16,7 @@ public enum TaskType {
     }
 
     /** Returns the single-letter tag used when rendering this task type. */
-    public String tag() {
+    public String getTag() {
         return tag;
     }
 }
