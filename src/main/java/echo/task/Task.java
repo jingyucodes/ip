@@ -65,4 +65,12 @@ public class Task {
     public boolean occursOn(LocalDate date) {
         return false;
     }
+
+    /**
+     * Returns whether this task's description contains the given
+     * keyword (case-insensitive).
+     */
+    public boolean matchesKeyword(String keyword) {
+        return description.toLowerCase().contains(keyword.toLowerCase());
+    }
 }

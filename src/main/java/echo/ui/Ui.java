@@ -131,4 +131,19 @@ public class Ui {
             System.out.println((i + 1) + "." + matches.get(i));
         }
     }
+
+    /**
+     * Prints every task in the given list as a keyword match, numbered
+     * from 1, or a "(none)" fallback if the list is empty.
+     */
+    public void showMatchingTasks(List<Task> matches) {
+        System.out.println("Here are the matching tasks in your list:");
+        if (matches.isEmpty()) {
+            System.out.println("(none)");
+            return;
+        }
+        for (int i = 0; i < matches.size(); i++) {
+            System.out.println((i + 1) + "." + matches.get(i));
+        }
+    }
 }

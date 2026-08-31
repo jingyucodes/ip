@@ -136,6 +136,23 @@ public class Parser {
     }
 
     /**
+     * Parses a {@code find} command's argument into the keyword to
+     * search task descriptions for.
+     *
+     * @param rest Text after the "find" command word, expected to be a
+     *     keyword.
+     * @return The keyword to search for.
+     * @throws EchoException If no keyword is given.
+     */
+    public static String parseFindKeyword(String rest) throws EchoException {
+        String keyword = rest.trim();
+        if (keyword.isEmpty()) {
+            throw new EchoException("Please give a keyword to search for. Example: find book");
+        }
+        return keyword;
+    }
+
+    /**
      * Parses a task-number argument (e.g. for {@code mark}/{@code delete})
      * into a zero-based list index.
      *
