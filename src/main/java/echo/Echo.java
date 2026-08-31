@@ -96,6 +96,17 @@ public class Echo {
                         ui.showTasksOnDate(date, matches);
                         break;
                     }
+                    case "find": {
+                        String keyword = Parser.parseFindKeyword(rest);
+                        List<Task> matches = new ArrayList<>();
+                        for (Task task : tasks.getAll()) {
+                            if (task.matchesKeyword(keyword)) {
+                                matches.add(task);
+                            }
+                        }
+                        ui.showMatchingTasks(matches);
+                        break;
+                    }
                     default:
                         throw new EchoException("I'm sorry, but I don't know what that means :-(");
                 }

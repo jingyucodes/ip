@@ -101,6 +101,23 @@ public class Parser {
         return parseDate(dateStr, "Invalid date. Use yyyy-mm-dd, e.g. 2019-10-15.");
     }
 
+    /**
+     * Parses a {@code find} command's argument into the keyword to
+     * search task descriptions for.
+     *
+     * @param rest Text after the "find" command word, expected to be a
+     *     keyword.
+     * @return The keyword to search for.
+     * @throws EchoException If no keyword is given.
+     */
+    public static String parseFindKeyword(String rest) throws EchoException {
+        String keyword = rest.trim();
+        if (keyword.isEmpty()) {
+            throw new EchoException("Please give a keyword to search for. Example: find book");
+        }
+        return keyword;
+    }
+
     public static int parseTaskIndex(String rest, int count) throws EchoException {
         String s = rest.trim();
         if (s.isEmpty()) {

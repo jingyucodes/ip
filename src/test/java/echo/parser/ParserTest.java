@@ -77,4 +77,17 @@ public class ParserTest {
                 () -> Parser.parseEvent("trip /from 2019-08-05 /to 2019-08-01"));
         assertEquals("An event's '/to' date cannot be before its '/from' date.", e.getMessage());
     }
+
+    // ---- parseFindKeyword ----
+
+    @Test
+    public void parseFindKeyword_validInput_returnsKeyword() throws EchoException {
+        assertEquals("book", Parser.parseFindKeyword("book"));
+    }
+
+    @Test
+    public void parseFindKeyword_emptyInput_throwsException() {
+        EchoException e = assertThrows(EchoException.class, () -> Parser.parseFindKeyword("  "));
+        assertEquals("Please give a keyword to search for. Example: find book", e.getMessage());
+    }
 }
