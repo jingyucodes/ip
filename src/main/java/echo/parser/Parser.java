@@ -62,13 +62,13 @@ public class Parser {
      */
     public static Task parseDeadline(String rest) throws EchoException {
         // split with limit 2 so a description containing "/by" isn't broken up
-        String[] p = rest.split(" /by ", 2);
-        if (p.length < 2) {
+        String[] parts = rest.split(" /by ", 2);
+        if (parts.length < 2) {
             throw new EchoException("A deadline needs a '/by <when>' clause. "
                     + "Example: deadline return book /by Sunday");
         }
-        String desc = p[0].trim();
-        String by = p[1].trim();
+        String desc = parts[0].trim();
+        String by = parts[1].trim();
         if (desc.isEmpty()) {
             throw new EchoException("The description of a deadline cannot be empty.");
         }
@@ -90,18 +90,18 @@ public class Parser {
      *     date is before the "/from" date.
      */
     public static Task parseEvent(String rest) throws EchoException {
-        String[] p1 = rest.split(" /from ", 2);
-        if (p1.length < 2) {
+        String[] fromParts = rest.split(" /from ", 2);
+        if (fromParts.length < 2) {
             throw new EchoException("An event needs a '/from <when>' clause. "
                     + "Example: event meeting /from Mon 2pm /to 4pm");
         }
-        String[] p2 = p1[1].split(" /to ", 2);
-        if (p2.length < 2) {
+        String[] toParts = fromParts[1].split(" /to ", 2);
+        if (toParts.length < 2) {
             throw new EchoException("An event needs a '/to <when>' clause after '/from'.");
         }
-        String desc = p1[0].trim();
-        String from = p2[0].trim();
-        String to = p2[1].trim();
+        String desc = fromParts[0].trim();
+        String from = toParts[0].trim();
+        String to = toParts[1].trim();
         if (desc.isEmpty()) {
             throw new EchoException("The description of an event cannot be empty.");
         }
