@@ -43,8 +43,8 @@ public class ParserTest {
 
     @Test
     public void parseDeadline_unparsableDate_throwsException() {
-        EchoException e = assertThrows(EchoException.class,
-                () -> Parser.parseDeadline("return book /by June 6th"));
+        EchoException e = assertThrows(EchoException.class, () ->
+                Parser.parseDeadline("return book /by June 6th"));
         assertEquals("Invalid date for '/by'. Use yyyy-mm-dd, e.g. 2019-10-15.", e.getMessage());
     }
 
@@ -66,15 +66,15 @@ public class ParserTest {
 
     @Test
     public void parseEvent_missingToClause_throwsException() {
-        EchoException e = assertThrows(EchoException.class,
-                () -> Parser.parseEvent("trip /from 2019-08-01"));
+        EchoException e = assertThrows(EchoException.class, () ->
+                Parser.parseEvent("trip /from 2019-08-01"));
         assertEquals("An event needs a '/to <when>' clause after '/from'.", e.getMessage());
     }
 
     @Test
     public void parseEvent_toBeforeFrom_throwsException() {
-        EchoException e = assertThrows(EchoException.class,
-                () -> Parser.parseEvent("trip /from 2019-08-05 /to 2019-08-01"));
+        EchoException e = assertThrows(EchoException.class, () ->
+                Parser.parseEvent("trip /from 2019-08-05 /to 2019-08-01"));
         assertEquals("An event's '/to' date cannot be before its '/from' date.", e.getMessage());
     }
 
