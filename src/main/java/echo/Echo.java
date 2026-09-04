@@ -1,5 +1,8 @@
 package echo;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +59,41 @@ public class Echo {
         }
         ui.close();
         ui.showGoodbye();
+    }
+
+    /**
+     * Returns Echo's reply to one command, instead of printing it. Used
+     * by the GUI, which sends one message per round trip rather than
+     * driving the console read-loop that run() uses.
+     *
+     * <p>Ui's show* methods still print to System.out under the hood, so
+     * this temporarily redirects System.out into a buffer for the
+     * duration of the call and returns what was captured. This is safe
+     * because Echo only ever runs one command at a time on a single
+     * thread (either via run() or via the GUI, never both at once).
+     *
+     * @param input Raw text the user typed into the GUI.
+     * @return Everything Echo would otherwise have printed for this
+     *     command, with no trailing divider lines.
+     */
+    public String getResponse(String input) {
+        if (input.trim().equals("bye")) {
+            return "Bye. Hope to echo with you again soon!";
+        }
+
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        PrintStream originalOut = System.out;
+        System.setOut(new PrintStream(buffer, true, StandardCharsets.UTF_8));
+        try {
+            String cmd = Parser.getCommandWord(input);
+            String rest = Parser.getArguments(input);
+            executeCommand(cmd, rest);
+        } catch (EchoException e) {
+            ui.showError(e.getMessage());
+        } finally {
+            System.setOut(originalOut);
+        }
+        return buffer.toString(StandardCharsets.UTF_8).trim();
     }
 
     /**
