@@ -48,78 +48,7 @@ public class Echo {
             try {
                 String cmd = Parser.getCommandWord(input);
                 String rest = Parser.getArguments(input);
-
-                switch (cmd) {
-                    case "list":
-                        ui.showList(tasks.getAll());
-                        break;
-                    case "mark": {
-                        int idx = Parser.parseTaskIndex(rest, tasks.size());
-                        tasks.get(idx).markAsDone();
-                        ui.showTaskMarked(tasks.get(idx));
-                        storage.save(tasks.getAll());
-                        break;
-                    }
-                    case "unmark": {
-                        int idx = Parser.parseTaskIndex(rest, tasks.size());
-                        tasks.get(idx).markAsNotDone();
-                        ui.showTaskUnmarked(tasks.get(idx));
-                        storage.save(tasks.getAll());
-                        break;
-                    }
-                    case "delete": {
-                        int idx = Parser.parseTaskIndex(rest, tasks.size());
-                        Task removed = tasks.remove(idx);
-                        ui.showTaskRemoved(removed, tasks.size());
-                        storage.save(tasks.getAll());
-                        break;
-                    }
-                    case "todo": {
-                        Task t = Parser.parseTodo(rest);
-                        tasks.add(t);
-                        ui.showTaskAdded(t, tasks.size());
-                        storage.save(tasks.getAll());
-                        break;
-                    }
-                    case "deadline": {
-                        Task t = Parser.parseDeadline(rest);
-                        tasks.add(t);
-                        ui.showTaskAdded(t, tasks.size());
-                        storage.save(tasks.getAll());
-                        break;
-                    }
-                    case "event": {
-                        Task t = Parser.parseEvent(rest);
-                        tasks.add(t);
-                        ui.showTaskAdded(t, tasks.size());
-                        storage.save(tasks.getAll());
-                        break;
-                    }
-                    case "on": {
-                        LocalDate date = Parser.parseOnDate(rest);
-                        List<Task> matches = new ArrayList<>();
-                        for (Task task : tasks.getAll()) {
-                            if (task.occursOn(date)) {
-                                matches.add(task);
-                            }
-                        }
-                        ui.showTasksOnDate(date, matches);
-                        break;
-                    }
-                    case "find": {
-                        String keyword = Parser.parseFindKeyword(rest);
-                        List<Task> matches = new ArrayList<>();
-                        for (Task task : tasks.getAll()) {
-                            if (task.matchesKeyword(keyword)) {
-                                matches.add(task);
-                            }
-                        }
-                        ui.showMatchingTasks(matches);
-                        break;
-                    }
-                    default:
-                        throw new EchoException("I'm sorry, but I don't know what that means :-(");
-                }
+                executeCommand(cmd, rest);
             } catch (EchoException e) {
                 ui.showError(e.getMessage());
             }
@@ -127,6 +56,92 @@ public class Echo {
         }
         ui.close();
         ui.showGoodbye();
+    }
+
+    /**
+     * Executes one already-split command word and argument string against
+     * the current task list, showing the result via Ui and persisting any
+     * change via Storage. Pulled out of run()'s loop so a future caller
+     * (e.g. a GUI controller) can dispatch a single command the same way
+     * the console loop does, without duplicating this switch.
+     *
+     * @param cmd Command word, e.g. "todo" or "mark".
+     * @param rest Text after the command word.
+     * @throws EchoException If the command is unrecognised or its
+     *     arguments are invalid.
+     */
+    private void executeCommand(String cmd, String rest) throws EchoException {
+        switch (cmd) {
+            case "list":
+                ui.showList(tasks.getAll());
+                break;
+            case "mark": {
+                int idx = Parser.parseTaskIndex(rest, tasks.size());
+                tasks.get(idx).markAsDone();
+                ui.showTaskMarked(tasks.get(idx));
+                storage.save(tasks.getAll());
+                break;
+            }
+            case "unmark": {
+                int idx = Parser.parseTaskIndex(rest, tasks.size());
+                tasks.get(idx).markAsNotDone();
+                ui.showTaskUnmarked(tasks.get(idx));
+                storage.save(tasks.getAll());
+                break;
+            }
+            case "delete": {
+                int idx = Parser.parseTaskIndex(rest, tasks.size());
+                Task removed = tasks.remove(idx);
+                ui.showTaskRemoved(removed, tasks.size());
+                storage.save(tasks.getAll());
+                break;
+            }
+            case "todo": {
+                Task t = Parser.parseTodo(rest);
+                tasks.add(t);
+                ui.showTaskAdded(t, tasks.size());
+                storage.save(tasks.getAll());
+                break;
+            }
+            case "deadline": {
+                Task t = Parser.parseDeadline(rest);
+                tasks.add(t);
+                ui.showTaskAdded(t, tasks.size());
+                storage.save(tasks.getAll());
+                break;
+            }
+            case "event": {
+                Task t = Parser.parseEvent(rest);
+                tasks.add(t);
+                ui.showTaskAdded(t, tasks.size());
+                storage.save(tasks.getAll());
+                break;
+            }
+            case "on": {
+                LocalDate date = Parser.parseOnDate(rest);
+                List<Task> matches = new ArrayList<>();
+                for (Task task : tasks.getAll()) {
+                    if (task.occursOn(date)) {
+                        matches.add(task);
+                    }
+                }
+                ui.showTasksOnDate(date, matches);
+                break;
+            }
+            case "find": {
+                String keyword = Parser.parseFindKeyword(rest);
+                List<Task> matches = new ArrayList<>();
+                for (Task task : tasks.getAll()) {
+                    if (task.matchesKeyword(keyword)) {
+                        matches.add(task);
+                    }
+                }
+                ui.showMatchingTasks(matches);
+                break;
+            }
+            default:
+                throw new EchoException("I'm sorry, but I don't know what that means :-(");
+        }
     }
 
     /**
