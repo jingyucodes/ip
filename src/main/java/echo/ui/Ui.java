@@ -67,6 +67,19 @@ public class Ui {
         System.out.println("OOPS!!! " + message);
     }
 
+    /**
+     * Prints each given line, in order. A varargs parameter fits here
+     * better than a {@code List<String>} would, since every caller
+     * already knows exactly how many lines it has (2 or 3, always a
+     * fixed number for a given message) and passes them as literals
+     * rather than building a collection first.
+     */
+    private void printLines(String... lines) {
+        for (String line : lines) {
+            System.out.println(line);
+        }
+    }
+
     /** Prints every task in the given list, numbered from 1. */
     public void showList(List<Task> items) {
         System.out.println("Here are the tasks in your list:");
@@ -82,9 +95,9 @@ public class Ui {
      * @param newCount The list's size after adding it.
      */
     public void showTaskAdded(Task t, int newCount) {
-        System.out.println("Got it. I've added this task:");
-        System.out.println("  " + t);
-        System.out.println("Now you have " + newCount + " tasks in the list.");
+        printLines("Got it. I've added this task:",
+                "  " + t,
+                "Now you have " + newCount + " tasks in the list.");
     }
 
     /**
@@ -95,21 +108,19 @@ public class Ui {
      * @param newCount The list's size after removing it.
      */
     public void showTaskRemoved(Task t, int newCount) {
-        System.out.println("Noted. I've removed this task:");
-        System.out.println("  " + t);
-        System.out.println("Now you have " + newCount + " tasks in the list.");
+        printLines("Noted. I've removed this task:",
+                "  " + t,
+                "Now you have " + newCount + " tasks in the list.");
     }
 
     /** Prints confirmation that a task was marked as done. */
     public void showTaskMarked(Task t) {
-        System.out.println("Nice! I've marked this task as done:");
-        System.out.println("  " + t);
+        printLines("Nice! I've marked this task as done:", "  " + t);
     }
 
     /** Prints confirmation that a task was marked as not done. */
     public void showTaskUnmarked(Task t) {
-        System.out.println("OK, I've marked this task as not done yet:");
-        System.out.println("  " + t);
+        printLines("OK, I've marked this task as not done yet:", "  " + t);
     }
 
     /**
