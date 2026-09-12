@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import echo.task.Deadline;
 import echo.task.Event;
@@ -92,7 +93,7 @@ public class Storage {
      */
     private Task parseLine(String line) {
         try {
-            String[] parts = line.split(" \\| ");
+            String[] parts = line.split(Pattern.quote(Task.FILE_FORMAT_SEPARATOR));
             String typeTag = parts[0].trim();
             boolean isDone = parts[1].trim().equals("1");
             String description = parts[2].trim();
