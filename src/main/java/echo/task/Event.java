@@ -18,6 +18,11 @@ public class Event extends Task {
      */
     public Event(String description, LocalDate from, LocalDate to) {
         super(description, TaskType.EVENT);
+        // Parser.parseEvent rejects a "/to" date before "/from" before ever
+        // constructing an Event, so every event's range should already be
+        // ordered. occursOn() relies on from <= to to work correctly, so
+        // this documents and checks that assumption at the source.
+        assert !to.isBefore(from) : "event's 'to' date should not be before its 'from' date";
         this.from = from;
         this.to = to;
     }

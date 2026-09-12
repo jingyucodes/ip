@@ -17,6 +17,10 @@ public class TaskList {
      * @param tasks The initial tasks (e.g. freshly loaded from Storage).
      */
     public TaskList(List<Task> tasks) {
+        // Storage.load() always returns a list (an empty one on IO failure,
+        // never null), and that's the only real call site, so a null here
+        // would mean a caller broke that contract, not a runtime condition.
+        assert tasks != null : "tasks list should not be null";
         this.tasks = tasks;
     }
 
@@ -27,11 +31,17 @@ public class TaskList {
 
     /** Removes and returns the task at the given zero-based index. */
     public Task remove(int index) {
+        // Callers reach this via Parser.parseTaskIndex, which already
+        // validates the index against tasks.size() and raises an
+        // EchoException otherwise, so an out-of-range index here would
+        // signal a bug in the caller, not bad user input.
+        assert index >= 0 && index < tasks.size() : "index should already be validated by the caller";
         return tasks.remove(index);
     }
 
     /** Returns the task at the given zero-based index. */
     public Task get(int index) {
+        assert index >= 0 && index < tasks.size() : "index should already be validated by the caller";
         return tasks.get(index);
     }
 
