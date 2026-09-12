@@ -134,27 +134,15 @@ public class Echo {
                 storage.save(tasks.getAll());
                 break;
             }
-            case "todo": {
-                Task t = Parser.parseTodo(rest);
-                tasks.add(t);
-                ui.showTaskAdded(t, tasks.size());
-                storage.save(tasks.getAll());
+            case "todo":
+                addTask(Parser.parseTodo(rest));
                 break;
-            }
-            case "deadline": {
-                Task t = Parser.parseDeadline(rest);
-                tasks.add(t);
-                ui.showTaskAdded(t, tasks.size());
-                storage.save(tasks.getAll());
+            case "deadline":
+                addTask(Parser.parseDeadline(rest));
                 break;
-            }
-            case "event": {
-                Task t = Parser.parseEvent(rest);
-                tasks.add(t);
-                ui.showTaskAdded(t, tasks.size());
-                storage.save(tasks.getAll());
+            case "event":
+                addTask(Parser.parseEvent(rest));
                 break;
-            }
             case "on": {
                 LocalDate date = Parser.parseOnDate(rest);
                 List<Task> matches = new ArrayList<>();
@@ -180,6 +168,20 @@ public class Echo {
             default:
                 throw new EchoException("I'm sorry, but I don't know what that means :-(");
         }
+    }
+
+    /**
+     * Adds the given task to the list, shows the "task added" confirmation,
+     * and persists the updated list. Shared by the todo/deadline/event
+     * cases in executeCommand(), which otherwise repeat this exact
+     * three-step sequence with only the parsed Task differing.
+     *
+     * @param t The newly parsed task to add.
+     */
+    private void addTask(Task t) {
+        tasks.add(t);
+        ui.showTaskAdded(t, tasks.size());
+        storage.save(tasks.getAll());
     }
 
     /**
