@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import echo.task.Deadline;
 import echo.task.Event;
@@ -62,10 +63,9 @@ public class Storage {
     public void save(List<Task> tasks) {
         try {
             ensureFileExists();
-            List<String> lines = new ArrayList<>();
-            for (Task task : tasks) {
-                lines.add(task.toFileFormat());
-            }
+            List<String> lines = tasks.stream()
+                    .map(Task::toFileFormat)
+                    .collect(Collectors.toList());
             Files.write(filePath, lines);
         } catch (IOException e) {
             System.out.println("Warning: could not save tasks (" + e.getMessage() + ").");
