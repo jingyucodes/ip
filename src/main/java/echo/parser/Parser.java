@@ -177,7 +177,12 @@ public class Parser {
         if (n < 1 || n > count) {
             throw new EchoException("Task " + n + " does not exist. You have " + count + " task(s).");
         }
-        return n - 1;
+        int index = n - 1;
+        // Postcondition: the range check above should guarantee this. Asserting
+        // it here catches a future edit to that check silently breaking the
+        // promise this method makes to callers like TaskList.get/remove.
+        assert index >= 0 && index < count : "returned index should be within [0, count)";
+        return index;
     }
 
     /**

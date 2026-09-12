@@ -57,6 +57,11 @@ public class MainWindow extends AnchorPane {
      */
     @FXML
     private void handleUserInput() {
+        // Main.start() always calls setEcho() right after loading the FXML
+        // and before showing the stage, so by the time a user can type into
+        // this window and fire this handler, echo must already be set.
+        assert echo != null : "echo should be injected via setEcho() before the window is shown";
+
         String input = userInput.getText();
         if (input.isBlank()) {
             return;
