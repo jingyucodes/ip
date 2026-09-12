@@ -78,7 +78,7 @@ public class Echo {
      */
     public String getResponse(String input) {
         if (input.trim().equals("bye")) {
-            return "Bye. Hope to echo with you again soon!";
+            return Ui.GOODBYE_MESSAGE;
         }
 
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
