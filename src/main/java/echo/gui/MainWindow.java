@@ -19,6 +19,9 @@ import javafx.util.Duration;
  * result as a pair of chat bubbles.
  */
 public class MainWindow extends AnchorPane {
+    /** How long to show Echo's farewell bubble before the window closes. */
+    private static final Duration EXIT_DELAY = Duration.seconds(1.2);
+
     @FXML
     private ScrollPane scrollPane;
     @FXML
@@ -70,7 +73,7 @@ public class MainWindow extends AnchorPane {
         userInput.clear();
 
         if (input.trim().equals("bye")) {
-            PauseTransition delay = new PauseTransition(Duration.seconds(1.2));
+            PauseTransition delay = new PauseTransition(EXIT_DELAY);
             delay.setOnFinished(event -> Platform.exit());
             delay.play();
         }
