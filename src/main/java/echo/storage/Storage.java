@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import echo.task.Deadline;
@@ -38,23 +39,18 @@ public class Storage {
      * with a warning rather than aborting the whole load.
      */
     public List<Task> load() {
-        List<Task> tasks = new ArrayList<>();
         try {
             ensureFileExists();
-            for (String line : Files.readAllLines(filePath)) {
-                if (line.isBlank()) {
-                    continue;
-                }
-                Task task = parseLine(line);
-                if (task != null) {
-                    tasks.add(task);
-                }
-            }
+            return Files.readAllLines(filePath).stream()
+                    .filter(line -> !line.isBlank())
+                    .map(this::parseLine)
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList());
         } catch (IOException e) {
             System.out.println("Warning: could not load saved tasks (" + e.getMessage()
                     + "). Starting with an empty list.");
+            return new ArrayList<>();
         }
-        return tasks;
     }
 
     /**
