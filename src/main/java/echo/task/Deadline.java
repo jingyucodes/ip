@@ -34,7 +34,7 @@ public class Deadline extends Task {
      */
     @Override
     public String toFileFormat() {
-        return super.toFileFormat() + " | " + by;
+        return super.toFileFormat() + FILE_FORMAT_SEPARATOR + by;
     }
 
     /**

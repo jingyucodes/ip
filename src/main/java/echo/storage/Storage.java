@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import echo.task.Deadline;
@@ -88,7 +89,7 @@ public class Storage {
      */
     private Task parseLine(String line) {
         try {
-            String[] parts = line.split(" \\| ");
+            String[] parts = line.split(Pattern.quote(Task.FILE_FORMAT_SEPARATOR));
             String typeTag = parts[0].trim();
             boolean isDone = parts[1].trim().equals("1");
             String description = parts[2].trim();

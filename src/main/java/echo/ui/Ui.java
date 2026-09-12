@@ -13,6 +13,13 @@ import echo.task.Task;
  * console I/O here instead of calling System.out/Scanner directly.
  */
 public class Ui {
+    /**
+     * Farewell message shown when the user exits. Public so Echo#getResponse
+     * can return the exact same text for its "bye" shortcut without
+     * duplicating the literal.
+     */
+    public static final String GOODBYE_MESSAGE = "Bye. Hope to echo with you again soon!";
+
     private static final String LINE =
             "____________________________________________________________";
 
@@ -46,7 +53,7 @@ public class Ui {
     /** Prints the farewell message shown when the user exits. */
     public void showGoodbye() {
         showLine();
-        System.out.println("Bye. Hope to echo with you again soon!");
+        System.out.println(GOODBYE_MESSAGE);
         showLine();
     }
 
