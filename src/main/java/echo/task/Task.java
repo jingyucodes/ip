@@ -11,6 +11,13 @@ public class Task {
     public static final DateTimeFormatter DISPLAY_DATE_FORMAT =
             DateTimeFormatter.ofPattern("MMM dd yyyy");
 
+    /**
+     * Field separator used when rendering a task to its save-file line.
+     * Storage#parseLine splits on this same constant when reading it back,
+     * so the writer and reader can never disagree on the separator.
+     */
+    public static final String FILE_FORMAT_SEPARATOR = " | ";
+
     private final String description;
     private final TaskType type;
     private boolean isDone;
@@ -55,7 +62,8 @@ public class Task {
      * after calling this via super, mirroring the toString() pattern.
      */
     public String toFileFormat() {
-        return type.getTag() + " | " + (isDone ? "1" : "0") + " | " + description;
+        return type.getTag() + FILE_FORMAT_SEPARATOR + (isDone ? "1" : "0")
+                + FILE_FORMAT_SEPARATOR + description;
     }
 
     /**
