@@ -154,6 +154,13 @@ public class Echo {
                 ui.showTasksOnDate(date, matches);
                 break;
             }
+            case "archive": {
+                List<Task> archived = tasks.clearAll();
+                ui.showArchived(archived.size());
+                storage.archive(archived);
+                storage.save(tasks.getAll());
+                break;
+            }
             case "find": {
                 String keyword = Parser.parseFindKeyword(rest);
                 List<Task> matches = new ArrayList<>();
