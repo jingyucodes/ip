@@ -1,5 +1,6 @@
 package echo.task;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -48,6 +49,17 @@ public class TaskList {
     /** Returns the number of tasks currently in the list. */
     public int size() {
         return tasks.size();
+    }
+
+    /**
+     * Removes every task from the list and returns them, in their
+     * previous order, so a caller (e.g. an archive command) can do
+     * something with them before the list becomes empty.
+     */
+    public List<Task> clearAll() {
+        List<Task> removed = new ArrayList<>(tasks);
+        tasks.clear();
+        return removed;
     }
 
     /**

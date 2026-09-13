@@ -3,6 +3,7 @@ package echo.storage;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,22 +15,25 @@ import echo.task.Task;
 import echo.task.Todo;
 
 /**
- * Reads and writes the task list to a save file on disk. The file location
- * is fixed at construction time; every other method operates on that one
- * path. Load/save never throw: any IO problem is reported with a short
- * warning so a save-file issue never prevents the chatbot from starting or
- * running.
+ * Reads and writes the task list to a save file on disk, and appends
+ * archived tasks to a separate archive file. Both file locations are
+ * fixed at construction time. Load/save/archive never throw: any IO
+ * problem is reported with a short warning so a save-file issue never
+ * prevents the chatbot from starting or running.
  */
 public class Storage {
     private final Path filePath;
+    private final Path archiveFilePath;
 
     /**
-     * Creates a Storage bound to the given save-file path.
+     * Creates a Storage bound to the given save-file path. Archived tasks
+     * go to a sibling file named "archive.txt" in the same folder.
      *
      * @param filePath Relative path to the save file, e.g. "data/echo.txt".
      */
     public Storage(String filePath) {
         this.filePath = Path.of(filePath);
+        this.archiveFilePath = this.filePath.resolveSibling("archive.txt");
     }
 
     /**
@@ -40,7 +44,7 @@ public class Storage {
     public List<Task> load() {
         List<Task> tasks = new ArrayList<>();
         try {
-            ensureFileExists();
+            ensureFileExists(filePath);
             for (String line : Files.readAllLines(filePath)) {
                 if (line.isBlank()) {
                     continue;
@@ -62,7 +66,7 @@ public class Storage {
      */
     public void save(List<Task> tasks) {
         try {
-            ensureFileExists();
+            ensureFileExists(filePath);
             List<String> lines = new ArrayList<>();
             for (Task task : tasks) {
                 lines.add(task.toFileFormat());
@@ -74,16 +78,39 @@ public class Storage {
     }
 
     /**
-     * Creates the save file's parent folder and the file itself if either
-     * is missing, so load()/save() never have to handle a missing path.
+     * Appends the given tasks to the archive file, creating it (and its
+     * parent folder) if missing. Previously archived tasks are kept, so
+     * archiving is cumulative across multiple uses rather than
+     * overwriting what came before.
+     *
+     * @param tasks The tasks to archive.
      */
-    private void ensureFileExists() throws IOException {
-        Path parent = filePath.getParent();
+    public void archive(List<Task> tasks) {
+        try {
+            ensureFileExists(archiveFilePath);
+            List<String> lines = new ArrayList<>();
+            for (Task task : tasks) {
+                lines.add(task.toFileFormat());
+            }
+            Files.write(archiveFilePath, lines, StandardOpenOption.APPEND);
+        } catch (IOException e) {
+            System.out.println("Warning: could not archive tasks (" + e.getMessage() + ").");
+        }
+    }
+
+    /**
+     * Creates the given file's parent folder and the file itself if either
+     * is missing, so load()/save()/archive() never have to handle a
+     * missing path. Shared by both the save file and the archive file,
+     * which otherwise need this exact same setup.
+     */
+    private void ensureFileExists(Path path) throws IOException {
+        Path parent = path.getParent();
         if (parent != null && Files.notExists(parent)) {
             Files.createDirectories(parent);
         }
-        if (Files.notExists(filePath)) {
-            Files.createFile(filePath);
+        if (Files.notExists(path)) {
+            Files.createFile(path);
         }
     }
 

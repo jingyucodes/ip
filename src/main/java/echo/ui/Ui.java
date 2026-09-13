@@ -151,6 +151,21 @@ public class Ui {
     }
 
     /**
+     * Prints confirmation that the given number of tasks were archived
+     * and the active list is now empty, or a "nothing to archive"
+     * message if the count is zero.
+     *
+     * @param count How many tasks were archived.
+     */
+    public void showArchived(int count) {
+        if (count == 0) {
+            System.out.println("There's nothing to archive - your list is already empty.");
+            return;
+        }
+        System.out.println("Archived " + count + " task(s). Your list is now empty.");
+    }
+
+    /**
      * Prints every task in the given list as a keyword match, numbered
      * from 1, or a "(none)" fallback if the list is empty.
      */
