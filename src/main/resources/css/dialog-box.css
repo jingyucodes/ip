@@ -15,15 +15,15 @@
 }
 
 .add-label {
-    -fx-background-color: yellow;
+    -fx-background-color: #bfe6e0;
 }
 
 .marked-label {
-    -fx-background-color: palegreen;
+    -fx-background-color: #c8e6c9;
 }
 
 .delete-label {
-    -fx-background-color: lightpink;
+    -fx-background-color: #f4c2c2;
 }
 
 #displayPicture {
