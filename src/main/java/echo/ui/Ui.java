@@ -18,7 +18,7 @@ public class Ui {
      * can return the exact same text for its "bye" shortcut without
      * duplicating the literal.
      */
-    public static final String GOODBYE_MESSAGE = "Bye. Hope to echo with you again soon!";
+    public static final String GOODBYE_MESSAGE = "Goodbye! Hope to echo with you again soon.";
 
     private static final String LINE =
             "____________________________________________________________";
@@ -46,7 +46,7 @@ public class Ui {
         showLine();
         System.out.print(banner);
         System.out.println("Hello! I'm Echo.");
-        System.out.println("What's on your mind?");
+        System.out.println("Toss a task my way and I'll make sure it comes back around when you need it.");
         showLine();
     }
 
@@ -102,7 +102,7 @@ public class Ui {
      * @param newCount The list's size after adding it.
      */
     public void showTaskAdded(Task t, int newCount) {
-        printLines("Got it. I've added this task:",
+        printLines("Echoed! I've added this task:",
                 "  " + t,
                 "Now you have " + newCount + " tasks in the list.");
     }
@@ -115,19 +115,19 @@ public class Ui {
      * @param newCount The list's size after removing it.
      */
     public void showTaskRemoved(Task t, int newCount) {
-        printLines("Noted. I've removed this task:",
+        printLines("Noted. This task has been cleared from the list:",
                 "  " + t,
                 "Now you have " + newCount + " tasks in the list.");
     }
 
     /** Prints confirmation that a task was marked as done. */
     public void showTaskMarked(Task t) {
-        printLines("Nice! I've marked this task as done:", "  " + t);
+        printLines("Loud and clear, that one's done:", "  " + t);
     }
 
     /** Prints confirmation that a task was marked as not done. */
     public void showTaskUnmarked(Task t) {
-        printLines("OK, I've marked this task as not done yet:", "  " + t);
+        printLines("Alright, that one goes back to pending:", "  " + t);
     }
 
     /**
@@ -159,10 +159,10 @@ public class Ui {
      */
     public void showArchived(int count) {
         if (count == 0) {
-            System.out.println("There's nothing to archive - your list is already empty.");
+            System.out.println("There's nothing to archive. Your list is already empty.");
             return;
         }
-        System.out.println("Archived " + count + " task(s). Your list is now empty.");
+        System.out.println("Archived " + count + " task(s). All clear for now.");
     }
 
     /**

@@ -54,4 +54,15 @@ public class Event extends Task {
     public boolean occursOn(LocalDate date) {
         return !date.isBefore(from) && !date.isAfter(to);
     }
+
+    /**
+     * Returns whether the given task is a duplicate of this one: same
+     * description (per the superclass check) and the same date range.
+     */
+    @Override
+    public boolean isDuplicateOf(Task other) {
+        return super.isDuplicateOf(other)
+                && this.from.equals(((Event) other).from)
+                && this.to.equals(((Event) other).to);
+    }
 }

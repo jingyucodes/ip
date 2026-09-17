@@ -48,7 +48,8 @@ public class MainWindow extends AnchorPane {
     public void setEcho(Echo echo) {
         this.echo = echo;
         dialogContainer.getChildren().add(
-                DialogBox.getEchoDialog("Hello! I'm Echo. What's on your mind?", echoImage, ""));
+                DialogBox.getEchoDialog("Hello! I'm Echo. Toss a task my way and I'll make sure "
+                        + "it comes back around when you need it.", echoImage, ""));
     }
 
     /**
