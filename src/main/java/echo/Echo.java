@@ -173,7 +173,8 @@ public class Echo {
                 break;
             }
             default:
-                throw new EchoException("I'm sorry, but I don't know what that means :-(");
+                throw new EchoException("I don't quite recognize that command. "
+                        + "Try 'todo', 'deadline', 'event', or 'list'.");
         }
     }
 
