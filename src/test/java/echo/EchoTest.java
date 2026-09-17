@@ -21,7 +21,7 @@ public class EchoTest {
 
         String response = echo.getResponse("todo read book");
 
-        assertEquals("Got it. I've added this task:\n"
+        assertEquals("Echoed! I've added this task:\n"
                 + "  [T][ ] read book\n"
                 + "Now you have 1 tasks in the list.", response);
     }
@@ -32,7 +32,7 @@ public class EchoTest {
 
         String response = echo.getResponse("deadline return book /by 2019-06-06");
 
-        assertEquals("Got it. I've added this task:\n"
+        assertEquals("Echoed! I've added this task:\n"
                 + "  [D][ ] return book (by: Jun 06 2019)\n"
                 + "Now you have 1 tasks in the list.", response);
     }
@@ -43,7 +43,7 @@ public class EchoTest {
 
         String response = echo.getResponse("event trip /from 2019-08-01 /to 2019-08-03");
 
-        assertEquals("Got it. I've added this task:\n"
+        assertEquals("Echoed! I've added this task:\n"
                 + "  [E][ ] trip (from: Aug 01 2019 to: Aug 03 2019)\n"
                 + "Now you have 1 tasks in the list.", response);
     }
@@ -68,7 +68,7 @@ public class EchoTest {
 
         String response = echo.getResponse("mark 1");
 
-        assertEquals("Nice! I've marked this task as done:\n"
+        assertEquals("Loud and clear, that one's done:\n"
                 + "  [T][X] read book", response);
     }
 
@@ -80,7 +80,7 @@ public class EchoTest {
 
         String response = echo.getResponse("unmark 1");
 
-        assertEquals("OK, I've marked this task as not done yet:\n"
+        assertEquals("Alright, that one goes back to pending:\n"
                 + "  [T][ ] read book", response);
     }
 
@@ -92,7 +92,7 @@ public class EchoTest {
 
         String response = echo.getResponse("delete 1");
 
-        assertEquals("Noted. I've removed this task:\n"
+        assertEquals("Noted. This task has been cleared from the list:\n"
                 + "  [T][ ] read book\n"
                 + "Now you have 1 tasks in the list.", response);
     }
@@ -115,7 +115,7 @@ public class EchoTest {
 
         String response = echo.getResponse("archive");
 
-        assertEquals("Archived 1 task(s). Your list is now empty.", response);
+        assertEquals("Archived 1 task(s). All clear for now.", response);
         assertEquals("Here are the tasks in your list:", echo.getResponse("list"));
     }
 
@@ -137,7 +137,8 @@ public class EchoTest {
 
         String response = echo.getResponse("blah");
 
-        assertEquals("OOPS!!! I'm sorry, but I don't know what that means :-(", response);
+        assertEquals("OOPS!!! I don't quite recognize that command. "
+                + "Try 'todo', 'deadline', 'event', or 'list'.", response);
     }
 
     @Test
@@ -146,6 +147,6 @@ public class EchoTest {
 
         String response = echo.getResponse("bye");
 
-        assertEquals("Bye. Hope to echo with you again soon!", response);
+        assertEquals("Goodbye! Hope to echo with you again soon.", response);
     }
 }
