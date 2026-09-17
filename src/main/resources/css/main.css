@@ -5,26 +5,28 @@
     -fx-background-image: url("../images/background.jpg"); /* Set image */
     -fx-background-size: 400px 100%;
     -fx-background-repeat: repeat stretch;
+    -fx-font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
 }
 
 .text-field {
-    -fx-background-color: #dff3fb;
-    -fx-font: 20px "Arial";
+    -fx-background-color: #d9ffe2;
+    -fx-font-size: 15px;
 }
 
 .button {
-    -fx-background-color: #2ca6a4;
-    -fx-text-fill: white;
-    -fx-font: italic bold 16px "Arial";
+    -fx-background-color: #8fae7c;
+    -fx-text-fill: #2f3d27;
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
 }
 
 .button:hover {
-    -fx-background-color: #4fc3c7;
+    -fx-background-color: #a3c28f;
     -fx-font-size: 18px;
 }
 
 .button:pressed {
-    -fx-background-color: #1b6ca8;
+    -fx-background-color: #728f61;
     -fx-font-size: 20px;
 }
 
@@ -42,7 +44,7 @@
 }
 
 .scroll-bar .thumb {
-    -fx-background-color: #7ec8e3;
+    -fx-background-color: #9db8ad;
     -fx-background-radius: 1em;
 }
 
