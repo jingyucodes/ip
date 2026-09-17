@@ -185,8 +185,12 @@ public class Echo {
      * three-step sequence with only the parsed Task differing.
      *
      * @param t The newly parsed task to add.
+     * @throws EchoException If an equivalent task already exists in the list.
      */
-    private void addTask(Task t) {
+    private void addTask(Task t) throws EchoException {
+        if (tasks.containsDuplicateOf(t)) {
+            throw new EchoException("This task already exists on your list: " + t);
+        }
         tasks.add(t);
         ui.showTaskAdded(t, tasks.size());
         storage.save(tasks.getAll());
