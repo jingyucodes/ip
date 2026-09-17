@@ -74,7 +74,9 @@ public class Echo {
      *
      * @param input Raw text the user typed into the GUI.
      * @return Everything Echo would otherwise have printed for this
-     *     command, with no trailing divider lines.
+     *     command, with no trailing divider lines. Lines are always
+     *     joined with "\n", regardless of the host platform's line
+     *     separator, so the result is consistent wherever Echo runs.
      */
     public String getResponse(String input) {
         if (input.trim().equals("bye")) {
@@ -93,7 +95,9 @@ public class Echo {
         } finally {
             System.setOut(originalOut);
         }
-        return buffer.toString(StandardCharsets.UTF_8).trim();
+        return buffer.toString(StandardCharsets.UTF_8)
+                .replace(System.lineSeparator(), "\n")
+                .trim();
     }
 
     /**
