@@ -48,6 +48,7 @@ public class Parser {
         if (desc.isEmpty()) {
             throw new EchoException("The description of a todo cannot be empty.");
         }
+        validateDescription(desc);
         return new Todo(desc);
     }
 
@@ -61,8 +62,9 @@ public class Parser {
      *     is empty, or the date is not in yyyy-mm-dd format.
      */
     public static Task parseDeadline(String rest) throws EchoException {
-        // split with limit 2 so a description containing "/by" isn't broken up
-        String[] parts = rest.split(" /by ", 2);
+        // split with limit 2 so a description containing "/by" isn't broken up;
+        // \s+ tolerates extra/irregular whitespace around the "/by" marker
+        String[] parts = rest.split("\\s+/by\\s+", 2);
         if (parts.length < 2) {
             throw new EchoException("A deadline needs a '/by <when>' clause. "
                     + "Example: deadline return book /by Sunday");
@@ -75,6 +77,7 @@ public class Parser {
         if (by.isEmpty()) {
             throw new EchoException("The '/by' time of a deadline cannot be empty.");
         }
+        validateDescription(desc);
         LocalDate byDate = parseDate(by, "Invalid date for '/by'. Use yyyy-mm-dd, e.g. 2019-10-15.");
         return new Deadline(desc, byDate);
     }
@@ -90,12 +93,13 @@ public class Parser {
      *     date is before the "/from" date.
      */
     public static Task parseEvent(String rest) throws EchoException {
-        String[] fromParts = rest.split(" /from ", 2);
+        // \s+ tolerates extra/irregular whitespace around the "/from"/"/to" markers
+        String[] fromParts = rest.split("\\s+/from\\s+", 2);
         if (fromParts.length < 2) {
             throw new EchoException("An event needs a '/from <when>' clause. "
                     + "Example: event meeting /from Mon 2pm /to 4pm");
         }
-        String[] toParts = fromParts[1].split(" /to ", 2);
+        String[] toParts = fromParts[1].split("\\s+/to\\s+", 2);
         if (toParts.length < 2) {
             throw new EchoException("An event needs a '/to <when>' clause after '/from'.");
         }
@@ -111,6 +115,7 @@ public class Parser {
         if (to.isEmpty()) {
             throw new EchoException("The '/to' time cannot be empty.");
         }
+        validateDescription(desc);
         LocalDate fromDate = parseDate(from, "Invalid date for '/from'. Use yyyy-mm-dd, e.g. 2019-10-15.");
         LocalDate toDate = parseDate(to, "Invalid date for '/to'. Use yyyy-mm-dd, e.g. 2019-10-15.");
         if (toDate.isBefore(fromDate)) {
@@ -183,6 +188,21 @@ public class Parser {
         // promise this method makes to callers like TaskList.get/remove.
         assert index >= 0 && index < count : "returned index should be within [0, count)";
         return index;
+    }
+
+    /**
+     * Rejects a description that contains the save file's own field
+     * separator, since that would corrupt the field count when the task
+     * is saved and later reloaded (see {@link Task#FILE_FORMAT_SEPARATOR}).
+     *
+     * @param desc The already-trimmed description to check.
+     * @throws EchoException If the description contains the separator.
+     */
+    private static void validateDescription(String desc) throws EchoException {
+        if (desc.contains(Task.FILE_FORMAT_SEPARATOR)) {
+            throw new EchoException("A task's description cannot contain '"
+                    + Task.FILE_FORMAT_SEPARATOR + "', since that's used internally to save your tasks.");
+        }
     }
 
     /**

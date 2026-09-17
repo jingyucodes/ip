@@ -30,6 +30,14 @@ public class TaskList {
         tasks.add(task);
     }
 
+    /**
+     * Returns whether the given task duplicates a task already in the
+     * list, per {@link Task#isDuplicateOf(Task)}.
+     */
+    public boolean containsDuplicateOf(Task task) {
+        return tasks.stream().anyMatch(existing -> existing.isDuplicateOf(task));
+    }
+
     /** Removes and returns the task at the given zero-based index. */
     public Task remove(int index) {
         // Callers reach this via Parser.parseTaskIndex, which already
