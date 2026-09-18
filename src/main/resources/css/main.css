@@ -3,8 +3,8 @@
     main-color: rgb(230, 244, 250);       /* Create a looked-up color called "main-color" within root. */
     -fx-background-color: main-color;
     -fx-background-image: url("../images/background.jpg"); /* Set image */
-    -fx-background-size: 400px 100%;
-    -fx-background-repeat: repeat stretch;
+    -fx-background-size: 100% 100%;
+    -fx-background-repeat: no-repeat;
     -fx-font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
 }
 
