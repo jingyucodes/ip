@@ -26,6 +26,9 @@ Prerequisites: JDK 25, update Intellij to the most recent version.
 
 ## Acknowledgements
 
-Development of this project was assisted by [Claude Code](https://claude.com/claude-code)
-(Anthropic), used for code generation, refactoring, and documentation across
-the codebase.
+This project made extensive use of AI assistance during development.
+[jingyucodes](https://github.com/jingyucodes) (the author) used
+[Claude Code](https://claude.com/claude-code) (Anthropic) throughout the
+project — not just for localized snippets — to write and refactor
+production and test code, design the GUI, and draft documentation, all
+under the author's review and direction.
