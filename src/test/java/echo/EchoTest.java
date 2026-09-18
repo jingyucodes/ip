@@ -116,7 +116,7 @@ public class EchoTest {
         String response = echo.getResponse("archive");
 
         assertEquals("Archived 1 task(s). All clear for now.", response);
-        assertEquals("Here are the tasks in your list:", echo.getResponse("list"));
+        assertEquals("Your list is empty for now. Nothing to echo back yet.", echo.getResponse("list"));
     }
 
     @Test
