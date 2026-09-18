@@ -87,8 +87,15 @@ public class Ui {
         }
     }
 
-    /** Prints every task in the given list, numbered from 1. */
+    /**
+     * Prints every task in the given list, numbered from 1, or a
+     * persona-appropriate message if the list is empty.
+     */
     public void showList(List<Task> items) {
+        if (items.isEmpty()) {
+            System.out.println("Your list is empty for now. Nothing to echo back yet.");
+            return;
+        }
         System.out.println("Here are the tasks in your list:");
         for (int i = 0; i < items.size(); i++) {
             System.out.println((i + 1) + "." + items.get(i));
