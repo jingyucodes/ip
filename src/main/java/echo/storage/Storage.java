@@ -7,7 +7,9 @@ import java.nio.file.StandardOpenOption;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import echo.task.Deadline;
 import echo.task.Event;
@@ -42,23 +44,18 @@ public class Storage {
      * with a warning rather than aborting the whole load.
      */
     public List<Task> load() {
-        List<Task> tasks = new ArrayList<>();
         try {
             ensureFileExists(filePath);
-            for (String line : Files.readAllLines(filePath)) {
-                if (line.isBlank()) {
-                    continue;
-                }
-                Task task = parseLine(line);
-                if (task != null) {
-                    tasks.add(task);
-                }
-            }
+            return Files.readAllLines(filePath).stream()
+                    .filter(line -> !line.isBlank())
+                    .map(this::parseLine)
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList());
         } catch (IOException e) {
             System.out.println("Warning: could not load saved tasks (" + e.getMessage()
                     + "). Starting with an empty list.");
+            return new ArrayList<>();
         }
-        return tasks;
     }
 
     /**
@@ -67,10 +64,9 @@ public class Storage {
     public void save(List<Task> tasks) {
         try {
             ensureFileExists(filePath);
-            List<String> lines = new ArrayList<>();
-            for (Task task : tasks) {
-                lines.add(task.toFileFormat());
-            }
+            List<String> lines = tasks.stream()
+                    .map(Task::toFileFormat)
+                    .collect(Collectors.toList());
             Files.write(filePath, lines);
         } catch (IOException e) {
             System.out.println("Warning: could not save tasks (" + e.getMessage() + ").");

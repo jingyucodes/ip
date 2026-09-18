@@ -4,8 +4,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import echo.parser.Parser;
 import echo.storage.Storage;
@@ -149,12 +149,9 @@ public class Echo {
                 break;
             case "on": {
                 LocalDate date = Parser.parseOnDate(rest);
-                List<Task> matches = new ArrayList<>();
-                for (Task task : tasks.getAll()) {
-                    if (task.occursOn(date)) {
-                        matches.add(task);
-                    }
-                }
+                List<Task> matches = tasks.getAll().stream()
+                        .filter(task -> task.occursOn(date))
+                        .collect(Collectors.toList());
                 ui.showTasksOnDate(date, matches);
                 break;
             }
@@ -167,12 +164,9 @@ public class Echo {
             }
             case "find": {
                 String keyword = Parser.parseFindKeyword(rest);
-                List<Task> matches = new ArrayList<>();
-                for (Task task : tasks.getAll()) {
-                    if (task.matchesKeyword(keyword)) {
-                        matches.add(task);
-                    }
-                }
+                List<Task> matches = tasks.getAll().stream()
+                        .filter(task -> task.matchesKeyword(keyword))
+                        .collect(Collectors.toList());
                 ui.showMatchingTasks(matches);
                 break;
             }
