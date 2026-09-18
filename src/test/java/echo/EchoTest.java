@@ -23,7 +23,7 @@ public class EchoTest {
 
         assertEquals("Echoed! I've added this task:\n"
                 + "  [T][ ] read book\n"
-                + "Now you have 1 tasks in the list.", response);
+                + "Now you have 1 task in the list.", response);
     }
 
     @Test
@@ -34,7 +34,7 @@ public class EchoTest {
 
         assertEquals("Echoed! I've added this task:\n"
                 + "  [D][ ] return book (by: Jun 06 2019)\n"
-                + "Now you have 1 tasks in the list.", response);
+                + "Now you have 1 task in the list.", response);
     }
 
     @Test
@@ -45,7 +45,7 @@ public class EchoTest {
 
         assertEquals("Echoed! I've added this task:\n"
                 + "  [E][ ] trip (from: Aug 01 2019 to: Aug 03 2019)\n"
-                + "Now you have 1 tasks in the list.", response);
+                + "Now you have 1 task in the list.", response);
     }
 
     @Test
@@ -94,7 +94,7 @@ public class EchoTest {
 
         assertEquals("Noted. This task has been cleared from the list:\n"
                 + "  [T][ ] read book\n"
-                + "Now you have 1 tasks in the list.", response);
+                + "Now you have 1 task in the list.", response);
     }
 
     @Test

@@ -104,7 +104,7 @@ public class Ui {
     public void showTaskAdded(Task t, int newCount) {
         printLines("Echoed! I've added this task:",
                 "  " + t,
-                "Now you have " + newCount + " tasks in the list.");
+                taskCountLine(newCount));
     }
 
     /**
@@ -117,7 +117,15 @@ public class Ui {
     public void showTaskRemoved(Task t, int newCount) {
         printLines("Noted. This task has been cleared from the list:",
                 "  " + t,
-                "Now you have " + newCount + " tasks in the list.");
+                taskCountLine(newCount));
+    }
+
+    /**
+     * Formats the "you now have N task(s)" line with correct singular/plural
+     * wording, shared by {@link #showTaskAdded} and {@link #showTaskRemoved}.
+     */
+    private String taskCountLine(int count) {
+        return "Now you have " + count + " task" + (count == 1 ? "" : "s") + " in the list.";
     }
 
     /** Prints confirmation that a task was marked as done. */
