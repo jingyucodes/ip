@@ -13,6 +13,27 @@ import echo.task.Task;
 
 public class ParserTest {
 
+    // ---- parseTodo ----
+
+    @Test
+    public void parseTodo_validInput_returnsTodo() throws EchoException {
+        Task task = Parser.parseTodo("read book");
+        assertEquals("[T][ ] read book", task.toString());
+    }
+
+    @Test
+    public void parseTodo_emptyDescription_throwsException() {
+        EchoException e = assertThrows(EchoException.class, () -> Parser.parseTodo("  "));
+        assertEquals("The description of a todo cannot be empty.", e.getMessage());
+    }
+
+    @Test
+    public void parseTodo_descriptionContainsFileSeparator_throwsException() {
+        EchoException e = assertThrows(EchoException.class, () -> Parser.parseTodo("read | book"));
+        assertEquals("A task's description cannot contain ' | ', "
+                + "since that's used internally to save your tasks.", e.getMessage());
+    }
+
     // ---- parseDeadline ----
 
     @Test
@@ -48,6 +69,20 @@ public class ParserTest {
         assertEquals("Invalid date for '/by'. Use yyyy-mm-dd, e.g. 2019-10-15.", e.getMessage());
     }
 
+    @Test
+    public void parseDeadline_irregularWhitespaceAroundBy_stillParses() throws EchoException {
+        Task task = Parser.parseDeadline("return book    /by   2019-06-06");
+        assertEquals("[D][ ] return book (by: Jun 06 2019)", task.toString());
+    }
+
+    @Test
+    public void parseDeadline_descriptionContainsFileSeparator_throwsException() {
+        EchoException e = assertThrows(EchoException.class, () ->
+                Parser.parseDeadline("return | book /by 2019-06-06"));
+        assertEquals("A task's description cannot contain ' | ', "
+                + "since that's used internally to save your tasks.", e.getMessage());
+    }
+
     // ---- parseEvent ----
 
     @Test
@@ -76,6 +111,20 @@ public class ParserTest {
         EchoException e = assertThrows(EchoException.class, () ->
                 Parser.parseEvent("trip /from 2019-08-05 /to 2019-08-01"));
         assertEquals("An event's '/to' date cannot be before its '/from' date.", e.getMessage());
+    }
+
+    @Test
+    public void parseEvent_irregularWhitespaceAroundClauses_stillParses() throws EchoException {
+        Task task = Parser.parseEvent("trip   /from  2019-08-01    /to  2019-08-03");
+        assertEquals("[E][ ] trip (from: Aug 01 2019 to: Aug 03 2019)", task.toString());
+    }
+
+    @Test
+    public void parseEvent_descriptionContainsFileSeparator_throwsException() {
+        EchoException e = assertThrows(EchoException.class, () ->
+                Parser.parseEvent("trip | gone /from 2019-08-01 /to 2019-08-03"));
+        assertEquals("A task's description cannot contain ' | ', "
+                + "since that's used internally to save your tasks.", e.getMessage());
     }
 
     // ---- parseFindKeyword ----

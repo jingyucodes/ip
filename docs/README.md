@@ -20,6 +20,26 @@ Example: `keyword (optional arguments)`
 expected output
 ```
 
+## Archiving tasks
+
+Move every task out of your active list into a separate archive file,
+keeping a record of them without cluttering your day-to-day list.
+Archiving is cumulative: doing it again later adds to the same archive
+file instead of overwriting it.
+
+Example: `archive`
+
+```
+Archived 2 task(s). Your list is now empty.
+```
+
+If your list is already empty, Echo tells you there's nothing to
+archive instead:
+
+```
+There's nothing to archive - your list is already empty.
+```
+
 ## Feature ABC
 
 // Feature details

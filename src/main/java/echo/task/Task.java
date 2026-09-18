@@ -81,4 +81,18 @@ public class Task {
     public boolean matchesKeyword(String keyword) {
         return description.toLowerCase().contains(keyword.toLowerCase());
     }
+
+    /**
+     * Returns whether this task should be treated as a duplicate of the
+     * given task: the same concrete task type and the same description,
+     * ignoring case and surrounding whitespace. Deadline and Event
+     * override this to also require their date(s) to match.
+     *
+     * @param other The task to compare against.
+     * @return True if the two tasks represent the same thing to a user.
+     */
+    public boolean isDuplicateOf(Task other) {
+        return this.getClass() == other.getClass()
+                && this.description.trim().equalsIgnoreCase(other.description.trim());
+    }
 }

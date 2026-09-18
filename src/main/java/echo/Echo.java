@@ -74,7 +74,9 @@ public class Echo {
      *
      * @param input Raw text the user typed into the GUI.
      * @return Everything Echo would otherwise have printed for this
-     *     command, with no trailing divider lines.
+     *     command, with no trailing divider lines. Lines are always
+     *     joined with "\n", regardless of the host platform's line
+     *     separator, so the result is consistent wherever Echo runs.
      */
     public String getResponse(String input) {
         if (input.trim().equals("bye")) {
@@ -93,7 +95,9 @@ public class Echo {
         } finally {
             System.setOut(originalOut);
         }
-        return buffer.toString(StandardCharsets.UTF_8).trim();
+        return buffer.toString(StandardCharsets.UTF_8)
+                .replace(System.lineSeparator(), "\n")
+                .trim();
     }
 
     /**
@@ -151,6 +155,13 @@ public class Echo {
                 ui.showTasksOnDate(date, matches);
                 break;
             }
+            case "archive": {
+                List<Task> archived = tasks.clearAll();
+                ui.showArchived(archived.size());
+                storage.archive(archived);
+                storage.save(tasks.getAll());
+                break;
+            }
             case "find": {
                 String keyword = Parser.parseFindKeyword(rest);
                 List<Task> matches = tasks.getAll().stream()
@@ -160,7 +171,8 @@ public class Echo {
                 break;
             }
             default:
-                throw new EchoException("I'm sorry, but I don't know what that means :-(");
+                throw new EchoException("I don't quite recognize that command. "
+                        + "Try 'todo', 'deadline', 'event', or 'list'.");
         }
     }
 
@@ -171,8 +183,12 @@ public class Echo {
      * three-step sequence with only the parsed Task differing.
      *
      * @param t The newly parsed task to add.
+     * @throws EchoException If an equivalent task already exists in the list.
      */
-    private void addTask(Task t) {
+    private void addTask(Task t) throws EchoException {
+        if (tasks.containsDuplicateOf(t)) {
+            throw new EchoException("This task already exists on your list: " + t);
+        }
         tasks.add(t);
         ui.showTaskAdded(t, tasks.size());
         storage.save(tasks.getAll());

@@ -33,8 +33,8 @@ public class MainWindow extends AnchorPane {
 
     private Echo echo;
 
-    private final Image userImage = new Image(this.getClass().getResourceAsStream("/images/DaUser.jpeg"));
-    private final Image echoImage = new Image(this.getClass().getResourceAsStream("/images/DaDuke.png"));
+    private final Image userImage = new Image(this.getClass().getResourceAsStream("/images/user.jpeg"));
+    private final Image echoImage = new Image(this.getClass().getResourceAsStream("/images/echo.jpeg"));
 
     @FXML
     private void initialize() {
@@ -48,7 +48,8 @@ public class MainWindow extends AnchorPane {
     public void setEcho(Echo echo) {
         this.echo = echo;
         dialogContainer.getChildren().add(
-                DialogBox.getEchoDialog("Hello! I'm Echo. What's on your mind?", echoImage, ""));
+                DialogBox.getEchoDialog("Hello! I'm Echo. Toss a task my way and I'll make sure "
+                        + "it comes back around when you need it.", echoImage, ""));
     }
 
     /**

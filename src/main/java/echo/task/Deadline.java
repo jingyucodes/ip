@@ -44,4 +44,13 @@ public class Deadline extends Task {
     public boolean occursOn(LocalDate date) {
         return by.equals(date);
     }
+
+    /**
+     * Returns whether the given task is a duplicate of this one: same
+     * description (per the superclass check) and the same due date.
+     */
+    @Override
+    public boolean isDuplicateOf(Task other) {
+        return super.isDuplicateOf(other) && this.by.equals(((Deadline) other).by);
+    }
 }

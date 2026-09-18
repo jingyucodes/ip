@@ -1,5 +1,6 @@
 package echo.task;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -29,6 +30,14 @@ public class TaskList {
         tasks.add(task);
     }
 
+    /**
+     * Returns whether the given task duplicates a task already in the
+     * list, per {@link Task#isDuplicateOf(Task)}.
+     */
+    public boolean containsDuplicateOf(Task task) {
+        return tasks.stream().anyMatch(existing -> existing.isDuplicateOf(task));
+    }
+
     /** Removes and returns the task at the given zero-based index. */
     public Task remove(int index) {
         // Callers reach this via Parser.parseTaskIndex, which already
@@ -48,6 +57,17 @@ public class TaskList {
     /** Returns the number of tasks currently in the list. */
     public int size() {
         return tasks.size();
+    }
+
+    /**
+     * Removes every task from the list and returns them, in their
+     * previous order, so a caller (e.g. an archive command) can do
+     * something with them before the list becomes empty.
+     */
+    public List<Task> clearAll() {
+        List<Task> removed = new ArrayList<>(tasks);
+        tasks.clear();
+        return removed;
     }
 
     /**
