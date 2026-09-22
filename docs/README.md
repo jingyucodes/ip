@@ -116,7 +116,7 @@ file instead of overwriting it.
 
 Format: `archive`
 
-Example:
+Example: `archive`
 ```
 Archived 2 task(s). All clear for now.
 ```
