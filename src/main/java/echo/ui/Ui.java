@@ -20,6 +20,13 @@ public class Ui {
      */
     public static final String GOODBYE_MESSAGE = "Goodbye! Hope to echo with you again soon.";
 
+    /**
+     * Prefix every error message starts with. Public so the GUI can detect
+     * an error reply (e.g. to style it differently) without duplicating
+     * this literal.
+     */
+    public static final String ERROR_PREFIX = "OOPS!!!";
+
     private static final String LINE =
             "____________________________________________________________";
 
@@ -71,7 +78,7 @@ public class Ui {
 
     /** Prints an error message, prefixed to stand out as a failure. */
     public void showError(String message) {
-        System.out.println("OOPS!!! " + message);
+        System.out.println(ERROR_PREFIX + " " + message);
     }
 
     /**

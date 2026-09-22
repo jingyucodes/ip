@@ -26,7 +26,11 @@
 }
 
 .delete-label {
-    -fx-background-color: #d3aca0;
+    -fx-background-color: #b8a8c9;
+}
+
+.error-label {
+    -fx-background-color: #c77b6f;
 }
 
 #displayPicture {
