@@ -3,6 +3,7 @@ package echo.gui;
 import java.io.IOException;
 import java.util.Collections;
 
+import echo.ui.Ui;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -84,7 +85,10 @@ public class DialogBox extends HBox {
 
     /**
      * Creates a flipped, command-styled dialog box for one of Echo's
-     * replies.
+     * replies. An error reply (one starting with {@link Ui#ERROR_PREFIX})
+     * always gets the error styling, regardless of which command word
+     * produced it -- otherwise, e.g. a failed {@code todo} would be
+     * coloured as if it had succeeded.
      *
      * @param text Echo's response text.
      * @param img Echo's avatar.
@@ -94,7 +98,11 @@ public class DialogBox extends HBox {
     public static DialogBox getEchoDialog(String text, Image img, String commandWord) {
         var db = new DialogBox(text, img);
         db.flip();
-        db.changeDialogStyle(commandWord);
+        if (text.startsWith(Ui.ERROR_PREFIX)) {
+            db.dialog.getStyleClass().add("error-label");
+        } else {
+            db.changeDialogStyle(commandWord);
+        }
         return db;
     }
 }
