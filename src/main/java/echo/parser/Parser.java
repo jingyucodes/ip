@@ -62,8 +62,8 @@ public class Parser {
      *     is empty, or the date is not in yyyy-mm-dd format.
      */
     public static Task parseDeadline(String rest) throws EchoException {
-        // split with limit 2 so a description containing "/by" isn't broken up;
-        // \s+ tolerates extra/irregular whitespace around the "/by" marker
+        // Split at the first "/by" only (limit 2), so any later "/by" stays in the date part.
+        // The \s+ on each side allows extra or irregular spaces around the "/by" marker.
         String[] parts = rest.split("\\s+/by\\s+", 2);
         if (parts.length < 2) {
             throw new EchoException("A deadline needs a '/by <when>' clause. "
